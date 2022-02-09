@@ -3,7 +3,7 @@ title             : "The title"
 shorttitle        : "Title"
 
 author: 
-  - name          : "First Author"
+  - name          : "Hafez Ahmad"
     affiliation   : "1"
     corresponding : yes    # Define only one corresponding author
     address       : "Postal address"
@@ -75,6 +75,16 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
 # Introduction
+### git
+initiate the upstream tracking of the project on the GitHub repo
+git remote add origin https://github.com/hansenjohnson/website.git
+
+pull all files from the GitHub repo (typically just readme, license, gitignore)
+git pull origin master/ main
+
+set up GitHub repo to track changes on local machine
+git push -u origin master
+
 ## Landuse
 ## SDM
 ## statistical analysis

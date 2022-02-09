@@ -3,11 +3,11 @@ title             : "The title"
 shorttitle        : "Title"
 
 author: 
-  - name          : "Hafez Ahmad"
+  - name          : "First Author"
     affiliation   : "1"
     corresponding : yes    # Define only one corresponding author
     address       : "Postal address"
-    email         : "ha626@email.com"
+    email         : "my@email.com"
     role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
       - Conceptualization
       - Writing - Original Draft Preparation
@@ -92,6 +92,7 @@ We used `r cite_r("r-references.bib")` for all our analyses.
 # Results
 
 # Discussion
+
 # Conclusion
 
 \newpage

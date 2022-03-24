@@ -1,5 +1,5 @@
 ---
-title             : "Geospatial analysis of Cox's bazar division, Bangladesh"
+title             : "Geospatial analysis of Oktibbeha County of Mississippi, USA"
 shorttitle        : "Title"
 
 author: 
@@ -19,7 +19,7 @@ author:
 
 affiliation:
   - id            : "1"
-    institution   : "Wilhelm-Wundt-University"
+    institution   : "Mississippi State University, "
   - id            : "2"
     institution   : "Konstanz Business School"
 
@@ -83,36 +83,37 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
 # Introduction
-we can use citation add symbol @Mukhopadhyay2018 
-### git
-initiate the upstream tracking of the project on the GitHub repo
-git remote add origin https://github.com/hansenjohnson/website.git
 
-pull all files from the GitHub repo (typically just readme, license, gitignore)
+
+
+###we can use citation add symbol @Mukhopadhyay2018 
+### git
+###initiate the upstream tracking of the project on the GitHub repo
+git remote add origin https://github.com/hafez-ahmad/R-markdown-article-class.git
+
+###pull all files from the GitHub repo (typically just readme, license, gitignore)
 git pull origin master/ main
 
-set up GitHub repo to track changes on local machine
+###set up GitHub repo to track changes on local machine
 git push -u origin master
 
-## Landuse
-## SDM
-## statistical analysis
-## landsaurfare temperature
-## Tests
-```{r}
-# 
-```
+
 
 # Methods
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
 
-## Participants
 
-## Material
+## Participants (First and Last name (Your email))
+1. Hafez Ahmad (ha@msstate.edu)
+
+# Material
+
 
 ## Procedure
+## Vegetation and Landuse [2020_06,2021_02,2021_06,2022_02]
 
-## Data analysis
+$NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
+
+### Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
 ```{r}
 data<- data.frame(Group=rep(c('control','Test1','Test2'),each=10),value=c(rnorm(10),runif(10),rnorm(10)))
@@ -133,21 +134,30 @@ meta
 ```
 
 ```{r}
+# empty vector 
 metafiles<- c()
+# append all names in the metafile vector 
 for (i in 1:4){
   mfilesnames<-paste0('meta_',substr(meta[i],18,25))
   metafiles<- c(metafiles, mfilesnames)
 }
+
+print(metafiles)
 ```
 
 ```{r}
+# read meta data 
 meta_20191203<- readMeta('W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
 
 ```
 ```{r}
-study<- readOGR('data/Oktibbeha.shp')
+# read shapefile
+study<-shapefile('data/Oktibbeha.shp')
+# read all raster files
 rasters_raw<- Sys.glob('data/*.TIF')
+# just one file for reprojection 
 new_Rast<- raster(rasters_raw[1])
+# reproject
 study<- spTransform(study, proj4string(new_Rast)) 
 
 ```
@@ -160,6 +170,11 @@ for (i in 1:8){
   writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
 }
 ```
+
+
+## statistical analysis
+## landsaurfare temperature and precipitation
+## Tests
 
 # Results
 

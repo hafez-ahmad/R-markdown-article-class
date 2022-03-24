@@ -65,6 +65,14 @@ output            : papaja::apa6_word
 
 ```{r setup, include = FALSE}
 library("papaja")
+# loading R libraries
+library (raster)       # raster data
+library(rasterVis)   # raster visualization     
+library(sp)          # spatial data processing          
+library(rgdal)       # spatial data processing      
+library(RStoolbox)   # Image analysis
+library(ggplot2)     # plotting
+library(gridExtra)   # plot arrangement
 r_refs("r-references.bib")
 ```
 
@@ -75,6 +83,7 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
 # Introduction
+we can use citation add symbol @Mukhopadhyay2018 
 ### git
 initiate the upstream tracking of the project on the GitHub repo
 git remote add origin https://github.com/hansenjohnson/website.git
@@ -105,7 +114,52 @@ We report how we determined our sample size, all data exclusions (if any), all m
 
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
+```{r}
+data<- data.frame(Group=rep(c('control','Test1','Test2'),each=10),value=c(rnorm(10),runif(10),rnorm(10)))
+write.csv(data,'data/landsurface temperature.csv')
+```
+```{r}
+data$Group<- as.factor(data$Group)
+png('Figures_or_Maps/boxplot.png')
+boxplot(value~Group,data=data)
+```
 
+## Data preprocessing 
+```{r}
+# loading raster and meta data 
+# landsat 8-9 OLI/TIRS C2 L1
+meta<- list.files('data',pattern = '.txt')
+meta
+```
+
+```{r}
+metafiles<- c()
+for (i in 1:4){
+  mfilesnames<-paste0('meta_',substr(meta[i],18,25))
+  metafiles<- c(metafiles, mfilesnames)
+}
+```
+
+```{r}
+meta_20191203<- readMeta('W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
+
+```
+```{r}
+study<- readOGR('data/Oktibbeha.shp')
+rasters_raw<- Sys.glob('data/*.TIF')
+new_Rast<- raster(rasters_raw[1])
+study<- spTransform(study, proj4string(new_Rast)) 
+
+```
+
+```{r}
+for (i in 1:8){
+  new_Rast<- raster(rasters_raw[i])
+  cropped<- crop(new_Rast,extent(study))
+  masked<- mask(cropped,study)
+  writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
+}
+```
 
 # Results
 

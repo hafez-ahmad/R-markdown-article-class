@@ -82,7 +82,9 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-###we can use citation add symbol @Mukhopadhyay2018 ##\# git ###initiate the upstream tracking of the project on the GitHub repo git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.git>
+###we can use citation add symbol [@Mukhopadhyay2018] 
+
+### git ###initiate the upstream tracking of the project on the GitHub repo git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.git>
 
 ###pull all files from the GitHub repo (typically just readme, license, gitignore) git pull origin master/ main
 
@@ -92,7 +94,9 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 
 we will write about vegetation, temperature and rainfall and a little bit demography
 
-Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index @im2008hyperspectral.
+Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral].
+
+Land cover and land use analysis are critical for determining how people and local ecosystem services interact today and in the future. It serves as the foundation for a comprehensive analysis of the research topic[@Mukhopadhyay2018].
 
 # Methods
 
@@ -106,7 +110,7 @@ Monitoring vegetation over time is an essential component of geographical resour
 
 ### we write about Oktibbeha county
 
-Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy [creek"\@gannett1902origin](mailto:creek%22@gannett1902origin){.email}. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
+Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
 ## Procedure
 
@@ -152,7 +156,7 @@ print(metafiles)
 
 ```{r}
 # read meta data 
-meta_20191203<- readMeta('data/raster_vector/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
+#meta_20191203<- readMeta('data/raster_vector/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
 
 ```
 
@@ -160,25 +164,25 @@ meta_20191203<- readMeta('data/raster_vector/LC08_L1TP_022037_20220314_20220322_
 # read shapefile
 study<-shapefile('data/raster_vector/Oktibbeha.shp')
 # read all raster files
-rasters_raw<- Sys.glob('data/*.TIF')
+#rasters_raw<- Sys.glob('data/*.TIF')
 # just one file for reprojection 
-new_Rast<- raster(rasters_raw[1])
+#new_Rast<- raster(rasters_raw[1])
 # reproject
-study<- spTransform(study, proj4string(new_Rast)) 
+#study<- spTransform(study, proj4string(new_Rast)) 
 
 ```
 
 ```{r}
 # Raster data processing 
-for (i in 1:8){
-  new_Rast<- raster(rasters_raw[i])
-  cropped<- crop(new_Rast,extent(study))
-  masked<- mask(cropped,study)
-  writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
-}
+#for (i in 1:8){
+#  new_Rast<- raster(rasters_raw[i])
+#  cropped<- crop(new_Rast,extent(study))
+#  masked<- mask(cropped,study)
+#  writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
+#}
 ```
 
-### Radio metric calibration and Atmospheric Correction
+### Radiometric calibration and Atmospheric Correction
 
 1.  Conversion DN values to spectral radiance
 
@@ -192,9 +196,9 @@ for (i in 1:8){
 
 ```
 
-## statistical analysis
+## Statistical analysis
 
-## landsaurfare temperature and precipitation
+## Land surface temperature and precipitation
 
 ## Tests
 

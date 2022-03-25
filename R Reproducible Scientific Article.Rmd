@@ -82,10 +82,6 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-# Introduction
-
-
-
 ###we can use citation add symbol @Mukhopadhyay2018 
 ### git
 ###initiate the upstream tracking of the project on the GitHub repo
@@ -97,6 +93,11 @@ git pull origin master/ main
 ###set up GitHub repo to track changes on local machine
 git push -u origin master
 
+# Introduction
+
+
+we will write about  vegetation, temperature and rainfall and a little bit demography
+
 
 
 # Methods
@@ -106,6 +107,9 @@ git push -u origin master
 1. Hafez Ahmad (ha@msstate.edu)
 
 # Material
+## stduy area 
+### we write about Oktibbeha county
+Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek"@gannett1902origin. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
 
 ## Procedure
@@ -129,7 +133,7 @@ boxplot(value~Group,data=data)
 ```{r}
 # loading raster and meta data 
 # landsat 8-9 OLI/TIRS C2 L1
-meta<- list.files('data',pattern = '.txt')
+meta<- list.files('data/raster_vector',pattern = '.txt')
 meta
 ```
 
@@ -152,7 +156,7 @@ meta_20191203<- readMeta('W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milest
 ```
 ```{r}
 # read shapefile
-study<-shapefile('data/Oktibbeha.shp')
+study<-shapefile('data/raster_vector/Oktibbeha.shp')
 # read all raster files
 rasters_raw<- Sys.glob('data/*.TIF')
 # just one file for reprojection 
@@ -170,7 +174,12 @@ for (i in 1:8){
   writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
 }
 ```
+### Radio metric calibration and Atmospheric Correction
+1. Conversion DN values to spectral radiance 
+2. Conversion of spectral radiance to reflectance
+```{r}
 
+```
 
 ## statistical analysis
 ## landsaurfare temperature and precipitation

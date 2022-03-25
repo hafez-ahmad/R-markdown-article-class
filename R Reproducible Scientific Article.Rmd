@@ -74,6 +74,7 @@ library(rgdal)       # spatial data processing
 library(RStoolbox)   # Image analysis
 library(ggplot2)     # plotting
 library(gridExtra)   # plot arrangement
+library(lubridate)
 r_refs("r-references.bib")
 ```
 
@@ -205,7 +206,13 @@ study<-shapefile('data/raster_vector/Oktibbeha.shp')
 
 # Results
 ```{r}
+lst$date<- mdy(lst$date)
+Prci$date<- mdy(Prci$date)
+lst$Month<- month(lst$date,label = TRUE)
+Prci$Month<- month(Prci$date,label = TRUE)
+
 lst_description<- lst %>% 
+  group_by(Month) %>% 
   summarize(Mean=round(mean(LST_Day_1km,na.rm=TRUE),2),
             Median=round(median(LST_Day_1km,na.rm=TRUE),2),
             Max=round(max(LST_Day_1km,na.rm=TRUE),2),
@@ -219,6 +226,24 @@ apa_table(lst_description,
           escape = TRUE)
 ```
 
+```{r}
+prc_description<- Prci %>% 
+  group_by(Month) %>% 
+  summarize(Mean=round(mean(precipitation,na.rm=TRUE),2),
+            Median=round(median(precipitation,na.rm=TRUE),2),
+            Max=round(max(precipitation,na.rm=TRUE),2),
+            Min=round(min(precipitation,na.rm=TRUE),2),
+            SD=round(sd(precipitation,na.rm=TRUE),2))
+prc_description[,-1] <- printnum(prc_description[,-1])
+
+apa_table(prc_description,
+          caption = 'Descriptive statistics of Precipitation (mm/hr)',
+          note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
+          escape = TRUE)
+```
+```{r my-figure, fig.cap = "(ref:my-figure-caption)" }
+plot(cars)
+```
 
 # Discussion
 

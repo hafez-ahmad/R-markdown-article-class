@@ -66,6 +66,7 @@ output            : papaja::apa6_word
 ```{r setup, include = FALSE}
 library("papaja")
 # loading R libraries
+library(tidyverse)
 library (raster)       # raster data
 library(rasterVis)   # raster visualization     
 library(sp)          # spatial data processing          
@@ -116,22 +117,22 @@ Oktibbeha County is a micropolitan county in east-central Mississippi that is ho
 
 ## Vegetation and Landuse \[2020_06,2021_02,2021_06,2022_02\]
 
+
 $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
+
+Landsurface temperature was download from  
+1. MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km 
 
 ### Data analysis
 
 We used `r cite_r("r-references.bib")` for all our analyses.
 
 ```{r}
-data<- data.frame(Group=rep(c('control','Test1','Test2'),each=10),value=c(rnorm(10),runif(10),rnorm(10)))
-write.csv(data,'data/landsurface temperature.csv')
+lst<- read_csv("data/landsurface temperature2010_22.csv")
+Prci<-read_csv("data/Precipitation1998_19.csv")
+
 ```
 
-```{r}
-data$Group<- as.factor(data$Group)
-png('Figures_or_Maps/boxplot.png')
-boxplot(value~Group,data=data)
-```
 
 ## Data preprocessing
 
@@ -203,6 +204,21 @@ study<-shapefile('data/raster_vector/Oktibbeha.shp')
 ## Tests
 
 # Results
+```{r}
+lst_description<- lst %>% 
+  summarize(Mean=round(mean(LST_Day_1km,na.rm=TRUE),2),
+            Median=round(median(LST_Day_1km,na.rm=TRUE),2),
+            Max=round(max(LST_Day_1km,na.rm=TRUE),2),
+            Min=round(min(LST_Day_1km,na.rm=TRUE),2),
+            SD=round(sd(LST_Day_1km,na.rm=TRUE),2))
+lst_description[,-1] <- printnum(lst_description[,-1])
+
+apa_table(lst_description,
+          caption = 'Descriptive statistics of Land surface temperature',
+          note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
+          escape = TRUE)
+```
+
 
 # Discussion
 

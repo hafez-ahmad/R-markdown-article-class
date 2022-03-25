@@ -82,54 +82,55 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-###we can use citation add symbol @Mukhopadhyay2018 
-### git
-###initiate the upstream tracking of the project on the GitHub repo
-git remote add origin https://github.com/hafez-ahmad/R-markdown-article-class.git
+###we can use citation add symbol @Mukhopadhyay2018 ##\# git ###initiate the upstream tracking of the project on the GitHub repo git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.git>
 
-###pull all files from the GitHub repo (typically just readme, license, gitignore)
-git pull origin master/ main
+###pull all files from the GitHub repo (typically just readme, license, gitignore) git pull origin master/ main
 
-###set up GitHub repo to track changes on local machine
-git push -u origin master
+###set up GitHub repo to track changes on local machine git push -u origin master
 
 # Introduction
 
+we will write about vegetation, temperature and rainfall and a little bit demography
 
-we will write about  vegetation, temperature and rainfall and a little bit demography
-
-
+Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index @im2008hyperspectral.
 
 # Methods
 
-
 ## Participants (First and Last name (Your email))
-1. Hafez Ahmad (ha@msstate.edu)
+
+1.  Hafez Ahmad ([ha\@msstate.edu](mailto:ha@msstate.edu){.email})
 
 # Material
-## stduy area 
-### we write about Oktibbeha county
-Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek"@gannett1902origin. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
+## Study area
+
+### we write about Oktibbeha county
+
+Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy [creek"\@gannett1902origin](mailto:creek%22@gannett1902origin){.email}. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
 ## Procedure
-## Vegetation and Landuse [2020_06,2021_02,2021_06,2022_02]
+
+## Vegetation and Landuse \[2020_06,2021_02,2021_06,2022_02\]
 
 $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 
 ### Data analysis
+
 We used `r cite_r("r-references.bib")` for all our analyses.
+
 ```{r}
 data<- data.frame(Group=rep(c('control','Test1','Test2'),each=10),value=c(rnorm(10),runif(10),rnorm(10)))
 write.csv(data,'data/landsurface temperature.csv')
 ```
+
 ```{r}
 data$Group<- as.factor(data$Group)
 png('Figures_or_Maps/boxplot.png')
 boxplot(value~Group,data=data)
 ```
 
-## Data preprocessing 
+## Data preprocessing
+
 ```{r}
 # loading raster and meta data 
 # landsat 8-9 OLI/TIRS C2 L1
@@ -151,9 +152,10 @@ print(metafiles)
 
 ```{r}
 # read meta data 
-meta_20191203<- readMeta('W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
+meta_20191203<- readMeta('data/raster_vector/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
 
 ```
+
 ```{r}
 # read shapefile
 study<-shapefile('data/raster_vector/Oktibbeha.shp')
@@ -167,6 +169,7 @@ study<- spTransform(study, proj4string(new_Rast))
 ```
 
 ```{r}
+# Raster data processing 
 for (i in 1:8){
   new_Rast<- raster(rasters_raw[i])
   cropped<- crop(new_Rast,extent(study))
@@ -174,29 +177,45 @@ for (i in 1:8){
   writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
 }
 ```
+
 ### Radio metric calibration and Atmospheric Correction
-1. Conversion DN values to spectral radiance 
-2. Conversion of spectral radiance to reflectance
+
+1.  Conversion DN values to spectral radiance
+
+```{r}
+
+```
+
+2.  Conversion of spectral radiance to reflectance
+
 ```{r}
 
 ```
 
 ## statistical analysis
+
 ## landsaurfare temperature and precipitation
+
 ## Tests
 
 # Results
 
 # Discussion
+
 # Conclusion
 
 \newpage
 
 # References
 
+```{=tex}
 \begingroup
 \setlength{\parindent}{-0.5in}
 \setlength{\leftskip}{0.5in}
+```
+::: {#refs custom-style="Bibliography"}
+:::
 
-<div id="refs" custom-style="Bibliography"></div>
+```{=tex}
 \endgroup
+```

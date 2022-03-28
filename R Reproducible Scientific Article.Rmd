@@ -225,7 +225,7 @@ apa_table(lst_description,
           note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
           escape = TRUE)
 ```
-
+## precipiation works 
 ```{r}
 prc_description<- Prci %>% 
   group_by(Month) %>% 

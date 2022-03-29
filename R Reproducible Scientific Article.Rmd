@@ -118,8 +118,13 @@ Oktibbeha County is a micropolitan county in east-central Mississippi that is ho
 
 ## Vegetation and Landuse \[2020_06,2021_02,2021_06,2022_02\]
 
+NDVI is a dimensionless index that depicts the difference between the reflectance of vegetation in the visible and near-infrared spectrum.It can be used to assess changes in plant health and vegetation density [@tucker2001higher]. An NDVI is calculated as a ratio of the red (R) value and the near-infrared (NIR) value. It ranges from -1.0 to 1.0, mainly representing greens, where negative values are mainly made up of clouds, snow, and water, and values close to zero are primarily made up of rocks and bare soil. A very low NDVI value (0.1 or less) corresponds to empty areas of rocks, sand, or snow. Moderate values (between 0.2 and 0.3) represent shrubs and meadows, while large values (between 0.6 and 0.8) indicate temperate and tropical forests.
 
+for the Landsat 8, the formula is given
 $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
+
+$ Band 5– reflection in the near-infrared spectrum$
+$Band 4 – reflection in the red range of the spectrum $
 
 Landsurface temperature was download from  
 1. MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km 
@@ -183,6 +188,7 @@ study<-shapefile('data/raster_vector/Oktibbeha.shp')
 #  writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
 #}
 ```
+Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs).  USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata. 
 
 ### Radiometric calibration and Atmospheric Correction
 
@@ -205,6 +211,11 @@ study<-shapefile('data/raster_vector/Oktibbeha.shp')
 ## Tests
 
 # Results
+## Mapping 
+```{r}
+
+```
+
 ```{r}
 lst$date<- mdy(lst$date)
 Prci$date<- mdy(Prci$date)

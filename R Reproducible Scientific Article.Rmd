@@ -147,7 +147,7 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 
 
 ## Data preprocessing
-
+### land 8-9 OLI /tirs c2 l1
 ```{r}
 # loading raster and meta data 
 # landsat 8-9 OLI/TIRS C2 L1
@@ -176,23 +176,26 @@ print(metafiles)
 ```{r}
 # read shapefile
 study<-shapefile('data/raster_vector/Oktibbeha.shp')
-# read all raster files
-#rasters_raw<- Sys.glob('data/*.TIF')
+#read all raster files
+rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
+metafile<-Sys.glob('data/raster_vector/*.txt')
 # just one file for reprojection 
-#new_Rast<- raster(rasters_raw[1])
+new_Rast<- raster(rasters_raw[1])
 # reproject
-#study<- spTransform(study, proj4string(new_Rast)) 
+study<- spTransform(study, proj4string(new_Rast)) 
 
 ```
 
 ```{r}
+rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
 # Raster data processing 
-#for (i in 1:8){
-#  new_Rast<- raster(rasters_raw[i])
-#  cropped<- crop(new_Rast,extent(study))
-#  masked<- mask(cropped,study)
-#  writeRaster(masked,paste0('data',names(new_Rast)[i],'.tif'),overwrite=TRUE)
-#}
+for (i in 1:8){
+  new_Rast<- raster(rasters_raw[i])
+ cropped<- crop(new_Rast,extent(study))
+  masked<- mask(cropped,study)
+  writeRaster(masked,paste0('data/raster_vector/',substr(rasters_raw[i],20,62),'.tif'),overwrite=TRUE)
+}
+
 ```
 Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs).  USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata. 
 
@@ -202,10 +205,47 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 ```{r}
 
+untar('LC08_L1TP_022037_20200612_20200823_02_T1.tar')
+metadata1<- readMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
+lsat=stackMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
+summary(lsat)   
+lsat_tra <- radCor(lsat,    # landsat stack
+                   metaData = metadata1,      # metadata (MTL file) 
+                   method = "rad")           # convert DN to radiance
+lsat_tra
+
 ```
 
 2.  Conversion of spectral radiance to reflectance
 
+```{r}
+lsat_tre<- radCor(lsat,        # landsat stack
+                  metaData = metadata1,         # metadata 
+                  method = "apref")
+raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
+
+```
+
+# NDVI calculation 
+```{r}
+
+data2020_06<- raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif')
+names(data2020_06)<-paste0(rep("B", times = 10, length.out = NA, each = 1),1:10)
+#NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}
+ndvi_2020_06<- (data2020_06$B5-data2020_06$B4/data2020_06$B5+data2020_06$B4)
+## Set up color gradient with 100 values between 0.0 and 1.0
+breaks <- seq(-1, 1, by = 0.09)
+cols <- colorRampPalette(c("red", "yellow", "lightgreen"))(length(breaks) - 1)
+ndvi_2020_06<- raster::projectRaster(ndvi_2020_06,crs="+proj=longlat +datum=WGS84 +no_defs ")
+## Use `at` and `col.regions` arguments to set the color scheme
+ndvi_2020_06_plot<-rasterVis::levelplot(ndvi_2020_06, at = breaks, col.regions = cols)
+# saving plot
+png(file = "Figures_or_Maps/ndvi_2020_06.png", bg = "transparent", width=1800, height=1800, res=300)
+print(ndvi_2020_06_plot)
+
+```
+
+# Classification
 ```{r}
 
 ```

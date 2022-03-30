@@ -6,12 +6,12 @@ Mississippi State University
 Department of Wildlife, Fisheries and Aquaculture
 
 # Instructions how to contribute 
-## Download git software , and create account in www.github.com
+## Download git software [https://git-scm.com/downloads] , and create account in www.github.com
 ## then configure your git software with your email and user name
 ## send your github user name email to hafezahmad100@gmail.com  
 ## I will add your name as contributor and then you will receive invitation for contribution.
 
-# Instruction for coding 
+# Instructions for R coding 
 
 ## We can use citation add symbol [@Mukhopadhyay2018] 
 

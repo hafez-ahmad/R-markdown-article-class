@@ -92,7 +92,7 @@ we will write about vegetation, temperature and rainfall and a little bit demogr
 
 Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral].
 
-Land cover and land use analysis are critical for determining how people and local ecosystem services interact today and in the future. It serves as the foundation for a comprehensive analysis of the research topic[@Mukhopadhyay2018].Although the terms land-use change and land-cover change (LULCC) are frequently used interchangeably, they do not have the same meaning. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use[@fonji2014using].Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory;berlanga2002land]
+Land cover and land use analysis are critical for determining how people and local ecosystem services interact today and in the future. It serves as the foundation for a comprehensive analysis of the research topic[@Mukhopadhyay2018].Although the terms land-use change and land-cover change (LULCC) are frequently used interchangeably, they do not have the same meaning. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use[@fonji2014using].Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory;berlanga2002land].
 
 
 # Methods
@@ -198,8 +198,9 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 1.  Conversion DN values to spectral radiance
 
 ```{r}
-
+# untar downloaded files
 untar('LC08_L1TP_022037_20200612_20200823_02_T1.tar')
+# read meta data 
 metadata1<- readMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
 lsat=stackMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
 summary(lsat)   
@@ -216,6 +217,7 @@ lsat_tra
 lsat_tre<- radCor(lsat,        # landsat stack
                   metaData = metadata1,         # metadata 
                   method = "apref")
+# wrting raster files
 raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
 
 ```
@@ -240,13 +242,6 @@ print(ndvi_2020_06_plot)
 ```
 
 # Classification
-```{r}
-
-```
-
-# used R libraries 
-We used `r cite_r("r-references.bib")` for all our analyses.
-
 
 ## Statistical analysis
 
@@ -330,6 +325,11 @@ legend(-105.22,40.04,legend= sampl$Classname,fill=c('blue','green','darkkhaki','
 
 
 ```
+
+# used R libraries 
+We used `r cite_r("r-references.bib")` for all our analyses.
+
+
 
 ```{r}
 # date change character to date time from lubridate library

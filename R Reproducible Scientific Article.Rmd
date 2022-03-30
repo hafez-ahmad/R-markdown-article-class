@@ -338,11 +338,13 @@ legend(-105.22,40.04,legend= sampl$Classname,fill=c('blue','green','darkkhaki','
 ```
 
 ```{r}
+# date change character to date time from lubridate library
 lst$date<- mdy(lst$date)
 Prci$date<- mdy(Prci$date)
+# adding column as month 
 lst$Month<- month(lst$date,label = TRUE)
 Prci$Month<- month(Prci$date,label = TRUE)
-
+# making table as descriptive statistics
 lst_description<- lst %>% 
   group_by(Month) %>% 
   summarize(Mean=round(mean(LST_Day_1km,na.rm=TRUE),2),
@@ -359,6 +361,7 @@ apa_table(lst_description,
 ```
 ## precipiation works 
 ```{r}
+# same descriptive table
 prc_description<- Prci %>% 
   group_by(Month) %>% 
   summarize(Mean=round(mean(precipitation,na.rm=TRUE),2),

@@ -263,6 +263,77 @@ We used `r cite_r("r-references.bib")` for all our analyses.
 # Results
 ## Mapping 
 ```{r}
+sampl<- terra::vect('data/raster_vector/training_sample.shp')
+ptsampl<-terra::spatSample(sampl,1000,method='random')
+plot(ptsampl,'Classname')
+# lat long extract
+xy<-as.matrix(geom(ptsampl)[,c('x','y')])
+df<- raster::extract(data2020_06,xy)[,-1]
+sampdata<- data.frame(class=ptsampl$Classname,df)
+head(sampdata)
+
+
+# train model
+cartmodel<- rpart::rpart(as.factor(class)~., data=sampdata)
+plot(cartmodel,uniform=TRUE,main='classification tree')
+text(cartmodel,cex=1)
+# classify
+classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
+
+plot(classified$green_area)
+
+plot(classified$roads,col='grey')
+
+lulc<- which.max(classified)
+cls<- names(classified)
+cls
+
+df<- data.frame(id=1:5,class=cls)
+df
+
+levels(lulc)<- df
+
+lulc
+
+plot(lulc)
+
+# customized 
+mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
+plot(lulc,col=mycolor)
+#legend(-105.21,40.04)
+# svm 
+library(e1071)
+library(randomForest)
+# train model
+cartmodel<- randomForest(as.factor(class)~., data=sampdata)
+
+plot(cartmodel)
+# classify
+classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
+classified
+plot(classified)
+
+
+lulc<- which.max(classified)
+lulc
+
+names(classified)
+
+cls<- names(classified)
+cls
+
+df<- data.frame(id=1:6,class=cls)
+df
+
+levels(lulc)<- df
+
+
+# customized 
+bp<- c(1,2,3,4,5)
+mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
+plot(classified,col=mycolor,legend=FALSE)
+legend(-105.22,40.04,legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
+
 
 ```
 

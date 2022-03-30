@@ -380,6 +380,7 @@ plot(cars)
 
 ## Discussion
 ```{r echo=FALSE, results=FALSE}
+# they are used for writing 
 tmp_mean<-mean(round(as.numeric(lst_description$Mean),0))
 tmp_sd<-mean(round(as.numeric(lst_description$SD),0))
 ```

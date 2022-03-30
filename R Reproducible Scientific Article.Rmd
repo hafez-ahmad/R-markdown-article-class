@@ -24,9 +24,8 @@ affiliation:
     institution   : "Konstanz Business School"
 
 authornote: |
-  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+  This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
 
-  Enter author note here.
 
 abstract: |
   One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
@@ -45,7 +44,7 @@ abstract: |
   
   
   
-keywords          : "keywords"
+keywords          : "Rmarkdown,GIS,Remote sensing,NDVI, Land use"
 wordcount         : "X"
 
 bibliography      : ["r-references.bib"]
@@ -57,6 +56,7 @@ footnotelist      : no
 linenumbers       : yes
 mask              : no
 draft             : no
+linkcolor         : "blue"
 
 documentclass     : "apa6"
 classoption       : "man"
@@ -84,67 +84,56 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-
-
 # Introduction
 
-we will write about vegetation, temperature and rainfall and a little bit demography
+<p align="justify"> Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory ;@berlanga2002land].</p>
 
-Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral].
+**Objectives**
 
-Land cover and land use analysis are critical for determining how people and local ecosystem services interact today and in the future. It serves as the foundation for a comprehensive analysis of the research topic[@Mukhopadhyay2018].Although the terms land-use change and land-cover change (LULCC) are frequently used interchangeably, they do not have the same meaning. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use[@fonji2014using].Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory;berlanga2002land].
-
+NDVI, Land surface temperature, Land use
 
 # Methods
 
 ## Participants (First and Last name (Your email))
 
-1.  Hafez Ahmad ([ha\@msstate.edu](mailto:ha@msstate.edu){.email})
+1.  Hafez Ahmad ([ha@msstate.edu](mailto:ha@msstate.edu){.email})
 
 # Material
 
 ## Study area
 
-### we write about Oktibbeha county
-
 Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
 ## Procedure
 
+Data source: Landsat8 imageries from 2020 to 2022 for February and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)" . Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" . Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis.
 
-###Data source
-Landsat8 imageries from 2020 to 2022 for February and June with less than 10% cloud were downloaded from https://earthexplorer.usgs.gov/. Moreover, eight-day composite of  Precipitation data from 2000 to 2022 was part of  $GPM: Monthly Global Precipitation Measurement (GPM)$. Furthermore, $Land Surface Temperature was part of  MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km$. Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis. 
-
-## Vegetation and Landuse \[2020_06,2021_02,2021_06,2022_02\]
-
+## Vegetation and land-use change and land-cover change [2020_06,2021_02,2021_06,2022_02]
 
 NDVI is a dimensionless index that depicts the difference between the reflectance of vegetation in the visible and near-infrared spectrum.It can be used to assess changes in plant health and vegetation density [@tucker2001higher]. An NDVI is calculated as a ratio of the red (R) value and the near-infrared (NIR) value. It ranges from -1.0 to 1.0, mainly representing greens, where negative values are mainly made up of clouds, snow, and water, and values close to zero are primarily made up of rocks and bare soil. A very low NDVI value (0.1 or less) corresponds to empty areas of rocks, sand, or snow. Moderate values (between 0.2 and 0.3) represent shrubs and meadows, while large values (between 0.6 and 0.8) indicate temperate and tropical forests.
 
-for the Landsat 8, the formula is given
-$NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
+for the Landsat 8, the formula is given $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 
-$ Band 5– reflection in the near-infrared spectrum$
-$Band 4 – reflection in the red range of the spectrum $
+\$ Band 5-- reflection in the near-infrared spectrum\$ \$Band 4 -- reflection in the red range of the spectrum \$
 
-## Landuse and land cover data 
-
+## Land use and land cover data
 
 ### Data analysis
 
-
-```{r}
+```{r message=TRUE, warning=TRUE}
 # reading data
-lst<- read_csv("data/landsurface temperature2010_22.csv")
+lst<- read_csv("data/land surface temperature2010_22.csv")
 Prci<-read_csv("data/Precipitation1998_19.csv")
 
 ```
 
-
 ## Data preprocessing
+
 ### land 8-9 OLI /tirs c2 l1
+
 ```{r}
 # loading raster and meta data 
-# landsat 8-9 OLI/TIRS C2 L1
+# Landsat 8-9 OLI/TIRS C2 L1
 meta<- list.files('data/raster_vector',pattern = '.txt')
 meta
 ```
@@ -191,7 +180,8 @@ for (i in 1:8){
 }"
 
 ```
-Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs).  USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata. 
+
+Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs). USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata.
 
 ### Radiometric calibration and Atmospheric Correction
 
@@ -223,7 +213,8 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 ```
 
-# NDVI calculation 
+# NDVI calculation
+
 ```{r}
 
 data2020_06<- raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif')
@@ -251,7 +242,9 @@ print(ndvi_2020_06_plot)
 ## Tests
 
 # Results
-## Mapping 
+
+## Mapping
+
 ```{r}
 # reading training file
 sampl<- terra::vect('data/raster_vector/training_sample.shp')
@@ -330,10 +323,9 @@ legend(-105.22,40.04,legend= sampl$Classname,fill=c('blue','green','darkkhaki','
 
 ```
 
-# used R libraries 
+# used R libraries
+
 We used `r cite_r("r-references.bib")` for all our analyses.
-
-
 
 ```{r}
 # date change character to date time from lubridate library
@@ -357,7 +349,9 @@ apa_table(lst_description,
           note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
           escape = TRUE)
 ```
-## precipiation works 
+
+## precipiation works
+
 ```{r}
 # same descriptive table
 prc_description<- Prci %>% 
@@ -374,11 +368,13 @@ apa_table(prc_description,
           note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
           escape = TRUE)
 ```
+
 ```{r my-figure, fig.cap = "(ref:my-figure-caption)" }
 plot(cars)
 ```
 
 ## Discussion
+
 ```{r echo=FALSE, results=FALSE}
 # they are used for writing 
 tmp_mean<-mean(round(as.numeric(lst_description$Mean),0))

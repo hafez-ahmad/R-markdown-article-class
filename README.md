@@ -1,4 +1,4 @@
-# R-markdown-article-class
+# Scientific Article Writing project with R markdown and Instruction page
 
 This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
 
@@ -23,5 +23,5 @@ git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.g
 ## Push means upload
 ## Please comments for what your are doing and then push it
 
-## set up GitHub repo to track changes on local machine 
+## Set up GitHub repo to track changes on local machine 
 git push -u origin master

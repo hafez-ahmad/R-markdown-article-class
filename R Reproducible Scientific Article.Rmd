@@ -66,7 +66,7 @@ output            : papaja::apa6_word
 ```{r setup, include = FALSE}
 library("papaja")
 # loading R libraries
-library(tidyverse)
+library(tidyverse)  # add  data analysis including ggplot
 library (raster)       # raster data
 library(rasterVis)   # raster visualization     
 library(sp)          # spatial data processing          
@@ -74,7 +74,7 @@ library(rgdal)       # spatial data processing
 library(RStoolbox)   # Image analysis
 library(ggplot2)     # plotting
 library(gridExtra)   # plot arrangement
-library(lubridate)
+library(lubridate)  # date time
 r_refs("r-references.bib")
 ```
 

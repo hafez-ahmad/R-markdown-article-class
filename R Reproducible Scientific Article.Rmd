@@ -43,7 +43,7 @@ abstract: |
   
   Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
   
-  <!-- https://tinyurl.com/ybremelq -->
+  
   
 keywords          : "keywords"
 wordcount         : "X"
@@ -169,26 +169,26 @@ print(metafiles)
 
 ```{r}
 # read shapefile
-study<-shapefile('data/raster_vector/Oktibbeha.shp')
-#read all raster files
+"study<-shapefile('data/raster_vector/Oktibbeha.shp')
+read all raster files
 rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
 metafile<-Sys.glob('data/raster_vector/*.txt')
 # just one file for reprojection 
 new_Rast<- raster(rasters_raw[1])
 # reproject
-study<- spTransform(study, proj4string(new_Rast)) 
+study<- spTransform(study, proj4string(new_Rast)) "
 
 ```
 
 ```{r}
-rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
+"rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
 # Raster data processing 
 for (i in 1:8){
   new_Rast<- raster(rasters_raw[i])
  cropped<- crop(new_Rast,extent(study))
   masked<- mask(cropped,study)
   writeRaster(masked,paste0('data/raster_vector/',substr(rasters_raw[i],20,62),'.tif'),overwrite=TRUE)
-}
+}"
 
 ```
 Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs).  USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata. 
@@ -199,26 +199,27 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 ```{r}
 # untar downloaded files
-untar('LC08_L1TP_022037_20200612_20200823_02_T1.tar')
+# untar('LC08_L1TP_022037_20200612_20200823_02_T1.tar')
 # read meta data 
-metadata1<- readMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
-lsat=stackMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
-summary(lsat)   
-lsat_tra <- radCor(lsat,    # landsat stack
-                   metaData = metadata1,      # metadata (MTL file) 
-                   method = "rad")           # convert DN to radiance
-lsat_tra
+#metadata1<- readMeta('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
+#lsat=stackMeta('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
+#summary(lsat)   
+#lsat_tra <- radCor(lsat,    # landsat stack
+ #                  metaData = metadata1,      # metadata (MTL file) 
+#                   method = "rad")           # convert DN to radiance
+#lsat_tra
 
 ```
 
 2.  Conversion of spectral radiance to reflectance
 
 ```{r}
-lsat_tre<- radCor(lsat,        # landsat stack
-                  metaData = metadata1,         # metadata 
-                  method = "apref")
+
+#lsat_tre<- radCor(lsat,        # landsat stack
+#                  metaData = metadata1,         # metadata 
+ #                 method = "apref")
 # wrting raster files
-raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
+#raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin #2022/WFA8990/milestone #project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, #overwrite=TRUE, format="GTiff") 
 
 ```
 
@@ -252,8 +253,11 @@ print(ndvi_2020_06_plot)
 # Results
 ## Mapping 
 ```{r}
+# reading training file
 sampl<- terra::vect('data/raster_vector/training_sample.shp')
+# Generate random sample
 ptsampl<-terra::spatSample(sampl,1000,method='random')
+# make a simple graph
 plot(ptsampl,'Classname')
 # lat long extract
 xy<-as.matrix(geom(ptsampl)[,c('x','y')])
@@ -375,6 +379,12 @@ plot(cars)
 ```
 
 ## Discussion
+```{r echo=FALSE, results=FALSE}
+tmp_mean<-mean(round(as.numeric(lst_description$Mean),0))
+tmp_sd<-mean(round(as.numeric(lst_description$SD),0))
+```
+
+Monthly average temperature is `r printnum(tmp_mean)` [C] and standard deviation is `r printnum(tmp_sd)`
 
 # Conclusion
 

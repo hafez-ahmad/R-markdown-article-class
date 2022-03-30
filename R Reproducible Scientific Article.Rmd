@@ -1,0 +1,398 @@
+---
+title             : "Geospatial analysis of Oktibbeha County of Mississippi, USA"
+shorttitle        : "Title"
+
+author: 
+  - name          : "Hafez Ahmad"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "ha626@msstate.edu"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - Conceptualization
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+  - name          : "Ernst-August Doelle"
+    affiliation   : "1,2"
+    role:
+      - Writing - Review & Editing
+
+affiliation:
+  - id            : "1"
+    institution   : "Mississippi State University, "
+  - id            : "2"
+    institution   : "Konstanz Business School"
+
+authornote: |
+  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+  Enter author note here.
+
+abstract: |
+  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
+  
+  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
+  
+  One sentence clearly stating the **general problem** being addressed by  this particular study.
+  
+  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
+  
+  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
+  
+  One or two sentences to put the results into a more **general context**.
+  
+  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "keywords"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib"]
+
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_word
+---
+
+```{r setup, include = FALSE}
+library("papaja")
+# loading R libraries
+library(tidyverse)
+library (raster)       # raster data
+library(rasterVis)   # raster visualization     
+library(sp)          # spatial data processing          
+library(rgdal)       # spatial data processing      
+library(RStoolbox)   # Image analysis
+library(ggplot2)     # plotting
+library(gridExtra)   # plot arrangement
+library(lubridate)
+r_refs("r-references.bib")
+```
+
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+###we can use citation add symbol [@Mukhopadhyay2018] 
+
+### git ###initiate the upstream tracking of the project on the GitHub repo git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.git>
+
+###pull all files from the GitHub repo (typically just readme, license, gitignore) git pull origin master/ main
+
+###set up GitHub repo to track changes on local machine git push -u origin master
+
+# Introduction
+
+we will write about vegetation, temperature and rainfall and a little bit demography
+
+Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral].
+
+Land cover and land use analysis are critical for determining how people and local ecosystem services interact today and in the future. It serves as the foundation for a comprehensive analysis of the research topic[@Mukhopadhyay2018].
+
+# Methods
+
+## Participants (First and Last name (Your email))
+
+1.  Hafez Ahmad ([ha\@msstate.edu](mailto:ha@msstate.edu){.email})
+
+# Material
+
+## Study area
+
+### we write about Oktibbeha county
+
+Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
+
+## Procedure
+
+
+Data source :
+
+Landsat8 imageries from 2020 to 2022 for February and June with less than 10% cloud were downloaded from https://earthexplorer.usgs.gov/. Moreover, eight-day composite of  Precipitation data from 2000 to 2022 was part of  $GPM: Monthly Global Precipitation Measurement (GPM)$. Furthermore, $Land Surface Temperature was part of  MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km$. Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis. 
+
+## Vegetation and Landuse \[2020_06,2021_02,2021_06,2022_02\]
+
+
+NDVI is a dimensionless index that depicts the difference between the reflectance of vegetation in the visible and near-infrared spectrum.It can be used to assess changes in plant health and vegetation density [@tucker2001higher]. An NDVI is calculated as a ratio of the red (R) value and the near-infrared (NIR) value. It ranges from -1.0 to 1.0, mainly representing greens, where negative values are mainly made up of clouds, snow, and water, and values close to zero are primarily made up of rocks and bare soil. A very low NDVI value (0.1 or less) corresponds to empty areas of rocks, sand, or snow. Moderate values (between 0.2 and 0.3) represent shrubs and meadows, while large values (between 0.6 and 0.8) indicate temperate and tropical forests.
+
+for the Landsat 8, the formula is given
+$NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
+
+$ Band 5– reflection in the near-infrared spectrum$
+$Band 4 – reflection in the red range of the spectrum $
+
+
+
+### Data analysis
+
+
+
+
+```{r}
+lst<- read_csv("data/landsurface temperature2010_22.csv")
+Prci<-read_csv("data/Precipitation1998_19.csv")
+
+```
+
+
+## Data preprocessing
+### land 8-9 OLI /tirs c2 l1
+```{r}
+# loading raster and meta data 
+# landsat 8-9 OLI/TIRS C2 L1
+meta<- list.files('data/raster_vector',pattern = '.txt')
+meta
+```
+
+```{r}
+# empty vector 
+metafiles<- c()
+# append all names in the metafile vector 
+for (i in 1:4){
+  mfilesnames<-paste0('meta_',substr(meta[i],18,25))
+  metafiles<- c(metafiles, mfilesnames)
+}
+
+print(metafiles)
+```
+
+```{r}
+# read meta data 
+#meta_20191203<- readMeta('data/raster_vector/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
+
+```
+
+```{r}
+# read shapefile
+study<-shapefile('data/raster_vector/Oktibbeha.shp')
+#read all raster files
+rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
+metafile<-Sys.glob('data/raster_vector/*.txt')
+# just one file for reprojection 
+new_Rast<- raster(rasters_raw[1])
+# reproject
+study<- spTransform(study, proj4string(new_Rast)) 
+
+```
+
+```{r}
+rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
+# Raster data processing 
+for (i in 1:8){
+  new_Rast<- raster(rasters_raw[i])
+ cropped<- crop(new_Rast,extent(study))
+  masked<- mask(cropped,study)
+  writeRaster(masked,paste0('data/raster_vector/',substr(rasters_raw[i],20,62),'.tif'),overwrite=TRUE)
+}
+
+```
+Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs).  USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata. 
+
+### Radiometric calibration and Atmospheric Correction
+
+1.  Conversion DN values to spectral radiance
+
+```{r}
+
+untar('LC08_L1TP_022037_20200612_20200823_02_T1.tar')
+metadata1<- readMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
+lsat=stackMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
+summary(lsat)   
+lsat_tra <- radCor(lsat,    # landsat stack
+                   metaData = metadata1,      # metadata (MTL file) 
+                   method = "rad")           # convert DN to radiance
+lsat_tra
+
+```
+
+2.  Conversion of spectral radiance to reflectance
+
+```{r}
+lsat_tre<- radCor(lsat,        # landsat stack
+                  metaData = metadata1,         # metadata 
+                  method = "apref")
+raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
+
+```
+
+# NDVI calculation 
+```{r}
+
+data2020_06<- raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif')
+names(data2020_06)<-paste0(rep("B", times = 10, length.out = NA, each = 1),1:10)
+#NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}
+ndvi_2020_06<- (data2020_06$B5-data2020_06$B4/data2020_06$B5+data2020_06$B4)
+## Set up color gradient with 100 values between 0.0 and 1.0
+breaks <- seq(-1, 1, by = 0.09)
+cols <- colorRampPalette(c("red", "yellow", "lightgreen"))(length(breaks) - 1)
+ndvi_2020_06<- raster::projectRaster(ndvi_2020_06,crs="+proj=longlat +datum=WGS84 +no_defs ")
+## Use `at` and `col.regions` arguments to set the color scheme
+ndvi_2020_06_plot<-rasterVis::levelplot(ndvi_2020_06, at = breaks, col.regions = cols)
+# saving plot
+png(file = "Figures_or_Maps/ndvi_2020_06.png", bg = "transparent", width=1800, height=1800, res=300)
+print(ndvi_2020_06_plot)
+
+```
+
+# Classification
+```{r}
+
+```
+
+# used R libraries 
+We used `r cite_r("r-references.bib")` for all our analyses.
+
+
+## Statistical analysis
+
+## Land surface temperature and precipitation
+
+## Tests
+
+# Results
+## Mapping 
+```{r}
+sampl<- terra::vect('data/raster_vector/training_sample.shp')
+ptsampl<-terra::spatSample(sampl,1000,method='random')
+plot(ptsampl,'Classname')
+# lat long extract
+xy<-as.matrix(geom(ptsampl)[,c('x','y')])
+df<- raster::extract(data2020_06,xy)[,-1]
+sampdata<- data.frame(class=ptsampl$Classname,df)
+head(sampdata)
+
+
+# train model
+cartmodel<- rpart::rpart(as.factor(class)~., data=sampdata)
+plot(cartmodel,uniform=TRUE,main='classification tree')
+text(cartmodel,cex=1)
+# classify
+classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
+
+plot(classified$green_area)
+
+plot(classified$roads,col='grey')
+
+lulc<- which.max(classified)
+cls<- names(classified)
+cls
+
+df<- data.frame(id=1:5,class=cls)
+df
+
+levels(lulc)<- df
+
+lulc
+
+plot(lulc)
+
+# customized 
+mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
+plot(lulc,col=mycolor)
+#legend(-105.21,40.04)
+# svm 
+library(e1071)
+library(randomForest)
+# train model
+cartmodel<- randomForest(as.factor(class)~., data=sampdata)
+
+plot(cartmodel)
+# classify
+classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
+classified
+plot(classified)
+
+
+lulc<- which.max(classified)
+lulc
+
+names(classified)
+
+cls<- names(classified)
+cls
+
+df<- data.frame(id=1:6,class=cls)
+df
+
+levels(lulc)<- df
+
+
+# customized 
+bp<- c(1,2,3,4,5)
+mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
+plot(classified,col=mycolor,legend=FALSE)
+legend(-105.22,40.04,legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
+
+
+```
+
+```{r}
+lst$date<- mdy(lst$date)
+Prci$date<- mdy(Prci$date)
+lst$Month<- month(lst$date,label = TRUE)
+Prci$Month<- month(Prci$date,label = TRUE)
+
+lst_description<- lst %>% 
+  group_by(Month) %>% 
+  summarize(Mean=round(mean(LST_Day_1km,na.rm=TRUE),2),
+            Median=round(median(LST_Day_1km,na.rm=TRUE),2),
+            Max=round(max(LST_Day_1km,na.rm=TRUE),2),
+            Min=round(min(LST_Day_1km,na.rm=TRUE),2),
+            SD=round(sd(LST_Day_1km,na.rm=TRUE),2))
+lst_description[,-1] <- printnum(lst_description[,-1])
+
+apa_table(lst_description,
+          caption = 'Descriptive statistics of Land surface temperature',
+          note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
+          escape = TRUE)
+```
+## precipiation works 
+```{r}
+prc_description<- Prci %>% 
+  group_by(Month) %>% 
+  summarize(Mean=round(mean(precipitation,na.rm=TRUE),2),
+            Median=round(median(precipitation,na.rm=TRUE),2),
+            Max=round(max(precipitation,na.rm=TRUE),2),
+            Min=round(min(precipitation,na.rm=TRUE),2),
+            SD=round(sd(precipitation,na.rm=TRUE),2))
+prc_description[,-1] <- printnum(prc_description[,-1])
+
+apa_table(prc_description,
+          caption = 'Descriptive statistics of Precipitation (mm/hr)',
+          note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
+          escape = TRUE)
+```
+```{r my-figure, fig.cap = "(ref:my-figure-caption)" }
+plot(cars)
+```
+
+# Discussion
+
+# Conclusion
+
+\newpage
+
+# References
+
+```{=tex}
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+```
+::: {#refs custom-style="Bibliography"}
+:::
+
+```{=tex}
+\endgroup
+```

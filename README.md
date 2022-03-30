@@ -11,6 +11,8 @@ Department of Wildlife, Fisheries and Aquaculture
 ## send your github user name email to hafezahmad100@gmail.com  
 ## I will add your name as contributor and then you will receive invitation for contribution.
 
+# Instruction for coding 
+
 ## We can use citation add symbol [@Mukhopadhyay2018] 
 
 ## initiate the upstream tracking of the project on the GitHub repo 
@@ -21,4 +23,5 @@ git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.g
 ## Push means upload
 ## Please comments for what your are doing and then push it
 
-## set up GitHub repo to track changes on local machine git push -u origin master
+## set up GitHub repo to track changes on local machine 
+git push -u origin master

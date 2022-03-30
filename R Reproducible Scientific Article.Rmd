@@ -377,7 +377,7 @@ apa_table(prc_description,
 plot(cars)
 ```
 
-# Discussion
+## Discussion
 
 # Conclusion
 

@@ -124,8 +124,7 @@ Oktibbeha County is a micropolitan county in east-central Mississippi that is ho
 ## Procedure
 
 
-Data source :
-
+###Data source
 Landsat8 imageries from 2020 to 2022 for February and June with less than 10% cloud were downloaded from https://earthexplorer.usgs.gov/. Moreover, eight-day composite of  Precipitation data from 2000 to 2022 was part of  $GPM: Monthly Global Precipitation Measurement (GPM)$. Furthermore, $Land Surface Temperature was part of  MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km$. Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis. 
 
 ## Vegetation and Landuse \[2020_06,2021_02,2021_06,2022_02\]
@@ -139,14 +138,14 @@ $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 $ Band 5– reflection in the near-infrared spectrum$
 $Band 4 – reflection in the red range of the spectrum $
 
+## Landuse and land cover data 
 
 
 ### Data analysis
 
 
-
-
 ```{r}
+# reading data
 lst<- read_csv("data/landsurface temperature2010_22.csv")
 Prci<-read_csv("data/Precipitation1998_19.csv")
 

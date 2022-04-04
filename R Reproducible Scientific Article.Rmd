@@ -153,26 +153,103 @@ print(metafiles)
 
 ```{r echo=FALSE}
 # read shapefile
-"study<-shapefile('data/raster_vector/Oktibbeha.shp')
-read all raster files
-rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
-metafile<-Sys.glob('data/raster_vector/*.txt')
-# just one file for reprojection 
-new_Rast<- raster(rasters_raw[1])
-# reproject
-study<- spTransform(study, proj4string(new_Rast)) "
+# study<-shapefile('data/raster_vector/Oktibbeha.shp')
+# read all raster files
+# rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
+# metafile<-Sys.glob('data/raster_vector/*.txt')
+# # just one file for reprojection 
+# new_Rast<- raster(rasters_raw[1])
+# # reproject
+# study<- spTransform(study, proj4string(new_Rast)) 
 
 ```
 
 ```{r echo=FALSE}
-"rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
-# Raster data processing 
-for (i in 1:8){
-  new_Rast<- raster(rasters_raw[i])
- cropped<- crop(new_Rast,extent(study))
-  masked<- mask(cropped,study)
-  writeRaster(masked,paste0('data/raster_vector/',substr(rasters_raw[i],20,62),'.tif'),overwrite=TRUE)
-}"
+
+# # 2020_02
+# setwd('D:\\home_tower\\Home\\hahmad\\R\\LC08_L1TP_022037_20200221_20200822_02_T1')
+# list.files()
+# metadata1<- readMeta('LC08_L1TP_022037_20200221_20200822_02_T1_MTL.txt')
+# lsat=stackMeta('LC08_L1TP_022037_20200221_20200822_02_T1_MTL.txt')     # stack landsat bands 
+# summary(lsat)   
+# lsat_tra <- radCor(lsat,    # landsat stack
+#                    metaData = metadata1,      # metadata (MTL file) 
+#                    method = "rad")           # convert DN to radiance
+# lsat_tre<- radCor(lsat,        # landsat stack
+#                   metaData = metadata1,         # metadata 
+#                   method = "apref")              # convert DN top-of-atmosphere reflectance
+# 
+# study<- spTransform(study, proj4string(lsat_tre)) 
+# cropped<- raster::crop(lsat_tre,extent(study))
+# masked<- raster::mask(cropped,study)
+# raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20200221_20200822_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
+# 
+# # 2020_06
+# setwd('D:\\home_tower\\Home\\hahmad\\R\\LC08_L1TP_022037_20200612_20200823_02_T1')
+# metadata1<- readMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
+# lsat=stackMeta('LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
+# lsat_tra <- radCor(lsat,    # landsat stack
+#                    metaData = metadata1,      # metadata (MTL file) 
+#                    method = "rad")           # convert DN to radiance
+# lsat_tre<- radCor(lsat,        # landsat stack
+#                   metaData = metadata1,         # metadata 
+#                   method = "apref")              # convert DN top-of-atmosphere reflectance
+# 
+# study<- spTransform(study, proj4string(lsat_tre)) 
+# cropped<- raster::crop(lsat_tre,extent(study))
+# masked<- raster::mask(cropped,study)
+# raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
+# 
+# 
+# # 2021_02
+# setwd('D:\\home_tower\\Home\\hahmad\\R\\LC08_L1TP_022037_20210223_20210303_02_T1')
+# metadata1<- readMeta('LC08_L1TP_022037_20210223_20210303_02_T1_MTL.txt')
+# lsat=stackMeta('LC08_L1TP_022037_20210223_20210303_02_T1_MTL.txt')     # stack landsat bands 
+# lsat_tra <- radCor(lsat,    # landsat stack
+#                    metaData = metadata1,      # metadata (MTL file) 
+#                    method = "rad")           # convert DN to radiance
+# lsat_tre<- radCor(lsat,        # landsat stack
+#                   metaData = metadata1,         # metadata 
+#                   method = "apref")              # convert DN top-of-atmosphere reflectance
+# 
+# study<- spTransform(study, proj4string(lsat_tre)) 
+# cropped<- raster::crop(lsat_tre,extent(study))
+# masked<- raster::mask(cropped,study)
+# raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20210223_20210303_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
+# 
+# 
+# 
+# # 2021_06
+# setwd('D:\\home_tower\\Home\\hahmad\\R\\LC08_L1TP_022037_20210615_20210622_02_T1')
+# metadata1<- readMeta('LC08_L1TP_022037_20210615_20210622_02_T1_MTL.txt')
+# lsat=stackMeta('LC08_L1TP_022037_20210615_20210622_02_T1_MTL.txt')     # stack landsat bands 
+# lsat_tra <- radCor(lsat,    # landsat stack
+#                    metaData = metadata1,      # metadata (MTL file) 
+#                    method = "rad")           # convert DN to radiance
+# lsat_tre<- radCor(lsat,        # landsat stack
+#                   metaData = metadata1,         # metadata 
+#                   method = "apref")              # convert DN top-of-atmosphere reflectance
+# 
+# study<- spTransform(study, proj4string(lsat_tre)) 
+# cropped<- raster::crop(lsat_tre,extent(study))
+# masked<- raster::mask(cropped,study)
+# raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20210615_20210622_02_T1_MTL.tif",bylayer=F, overwrite=TRUE, format="GTiff")
+# 
+# # 2022_03
+# setwd('D:\\home_tower\\Home\\hahmad\\R\\LC08_L1TP_022037_20220314_20220322_02_T1')
+# metadata1<- readMeta('LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
+# lsat=stackMeta('LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')     # stack landsat bands 
+# lsat_tra <- radCor(lsat,    # landsat stack
+#                    metaData = metadata1,      # metadata (MTL file) 
+#                    method = "rad")           # convert DN to radiance
+# lsat_tre<- radCor(lsat,        # landsat stack
+#                   metaData = metadata1,         # metadata 
+#                   method = "apref")              # convert DN top-of-atmosphere reflectance
+# 
+# study<- spTransform(study, proj4string(lsat_tre)) 
+# cropped<- raster::crop(lsat_tre,extent(study))
+# masked<- raster::mask(cropped,study)
+# raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/LC08_L1TP_022037_20220314_20220322_02_T1.tif",bylayer=F, overwrite=TRUE, format="GTiff")
 
 ```
 

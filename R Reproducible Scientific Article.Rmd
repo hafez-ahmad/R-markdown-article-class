@@ -49,7 +49,7 @@ classoption       : "man"
 output            : papaja::apa6_word
 ---
 
-```{r setup, include = FALSE}
+```{r setup, include = FALSE,echo=FALSE}
 library("papaja") # formatting library
 # loading R libraries
 library(tidyverse)  # add  data analysis including ggplot
@@ -64,11 +64,6 @@ library(lubridate)  # date time
 r_refs("r-references.bib") # add all references 
 ```
 
-```{r analysis-preferences}
-# Seed for random number generation
-set.seed(42)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
-```
 
 # Introduction
 
@@ -111,7 +106,7 @@ $\rho_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_
 
 ### Data analysis
 
-```{r message=TRUE, warning=TRUE}
+```{r message=TRUE, warning=TRUE,echo=FALSE}
 # reading data
 lst<- read_csv("data/landsurface temperature2010_22.csv")
 Prci<-read_csv("data/Precipitation1998_19.csv")
@@ -122,14 +117,19 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 
 ### land 8-9 OLI /tirs c2 l1
 
-```{r}
+```{r message=FALSE, warning=FALSE,echo=FALSE}
 # loading raster and meta data 
 # Landsat 8-9 OLI/TIRS C2 L1
+# un zipping 
+for (i in 1:5){
+  untar(list.files()[i],exdir=substr(list.files()[i],1,40))
+  print(paste0('finished untaring /unzipping',list.files()[i]))}
+
 meta<- list.files('data/raster_vector',pattern = '.txt')
 meta
 ```
 
-```{r}
+```{r echo=FALSE}
 # empty vector 
 metafiles<- c()
 # append all names in the metafile vector 
@@ -147,7 +147,7 @@ print(metafiles)
 
 ```
 
-```{r}
+```{r echo=FALSE}
 # read shapefile
 "study<-shapefile('data/raster_vector/Oktibbeha.shp')
 read all raster files
@@ -160,7 +160,7 @@ study<- spTransform(study, proj4string(new_Rast)) "
 
 ```
 
-```{r}
+```{r echo=FALSE}
 "rasters_raw<- Sys.glob('data/raster_vector/*.TIF')
 # Raster data processing 
 for (i in 1:8){
@@ -178,9 +178,8 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 1.  Conversion DN values to spectral radiance
 
-```{r}
-# untar downloaded files
-# untar('LC08_L1TP_022037_20200612_20200823_02_T1.tar')
+```{r echo=FALSE}
+
 # read meta data 
 #metadata1<- readMeta('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
 #lsat=stackMeta('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
@@ -194,7 +193,7 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 2.  Conversion of spectral radiance to reflectance
 
-```{r}
+```{r echo=FALSE}
 
 #lsat_tre<- radCor(lsat,        # landsat stack
 #                  metaData = metadata1,         # metadata 
@@ -206,7 +205,7 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 # NDVI calculation
 
-```{r}
+```{r echo=FALSE}
 
 data2020_06<- raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif')
 names(data2020_06)<-paste0(rep("B", times = 10, length.out = NA, each = 1),1:10)
@@ -236,7 +235,7 @@ print(ndvi_2020_06_plot)
 
 ## Mapping
 
-```{r}
+```{r echo=FALSE}
 # reading training file
 sampl<- terra::vect('data/raster_vector/training_sample.shp')
 # Generate random sample
@@ -318,7 +317,7 @@ legend('bottomright',legend= sampl$Classname,fill=c('blue','green','darkkhaki','
 
 We used `r cite_r("r-references.bib")` for all our analyses.
 
-```{r}
+```{r echo=FALSE}
 # date change character to date time from lubridate library
 lst$date<- mdy(lst$date)
 Prci$date<- mdy(Prci$date)
@@ -343,7 +342,7 @@ apa_table(lst_description,
 
 ## precipiation works
 
-```{r}
+```{r echo=FALSE}
 # same descriptive table
 prc_description<- Prci %>% 
   group_by(Month) %>% 

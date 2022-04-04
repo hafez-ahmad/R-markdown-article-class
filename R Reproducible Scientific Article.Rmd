@@ -72,12 +72,13 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 
 # Introduction
 
-<p align="justify"> Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory ;@berlanga2002land].</p>
+<p align="justify"> Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. 
 
-**Objectives**
+Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory ;@berlanga2002land].</p>
 
-NDVI, Land surface temperature, Land use
+Oktibbeha County experiences the hottest temperatures in July with an average high of $33^o$C.
 
+In this mini paper, the **objectives** are (a) to present results of an analysis of the land surface temperature and precipitation, (b) to quantify normalized vegetation index for three years and estimate the land use /land cover, (c) to determine the relationship  between vegetation and land use.
 # Methods
 
 ## Participants (First and Last name (Your email))
@@ -100,7 +101,11 @@ NDVI is a dimensionless index that depicts the difference between the reflectanc
 
 for the Landsat 8, the formula is given $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 
-\$ Band 5-- reflection in the near-infrared spectrum\$ \$Band 4 -- reflection in the red range of the spectrum \$
+ Band 5-- reflection in the near-infrared spectrum 
+ Band 4 -- reflection in the red range of the spectrum 
+ Correlation Coefficient 
+$\rho_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)\left(Y_{i}-\bar{Y}\right)}{\sqrt{{\Sigma}_{\Sigma_{i}=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} \sqrt{{\sum}_{\Sigma_{i}=1}^{n}\left(Y_{i}-\bar{Y}\right)^{2}}}$
+
 
 ## Land use and land cover data
 
@@ -108,7 +113,7 @@ for the Landsat 8, the formula is given $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Ba
 
 ```{r message=TRUE, warning=TRUE}
 # reading data
-lst<- read_csv("data/land surface temperature2010_22.csv")
+lst<- read_csv("data/landsurface temperature2010_22.csv")
 Prci<-read_csv("data/Precipitation1998_19.csv")
 
 ```
@@ -252,7 +257,7 @@ text(cartmodel,cex=1)
 # classify
 classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
 
-plot(classified$green_area)
+plot(classified)
 
 plot(classified$roads,col='grey')
 
@@ -294,7 +299,7 @@ names(classified)
 cls<- names(classified)
 cls
 
-df<- data.frame(id=1:6,class=cls)
+df<- data.frame(id=1:5,class=cls)
 df
 
 levels(lulc)<- df
@@ -304,7 +309,7 @@ levels(lulc)<- df
 bp<- c(1,2,3,4,5)
 mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
 plot(classified,col=mycolor,legend=FALSE)
-legend(-105.22,40.04,legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
+legend('bottomright',legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
 
 
 ```

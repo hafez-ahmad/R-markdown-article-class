@@ -1,12 +1,11 @@
 ---
 title             : "Geospatial analysis of Oktibbeha County of Mississippi, USA"
-shorttitle        : "Title"
 
 author: 
   - name          : "Hafez Ahmad"
     affiliation   : "1"
     corresponding : yes    # Define only one corresponding author
-    address       : "Postal address"
+    address       : "College of Forest Resources,Mississippi State, MS 39762"
     email         : "ha626@msstate.edu"
     role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
       - Conceptualization
@@ -21,26 +20,13 @@ affiliation:
   - id            : "1"
     institution   : "Mississippi State University, "
   - id            : "2"
-    institution   : "Konstanz Business School"
+    institution   : "Mississippi"
 
 authornote: |
   This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
 
 
 abstract: |
-  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
-  
-  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
-  
-  One sentence clearly stating the **general problem** being addressed by  this particular study.
-  
-  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
-  
-  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
-  
-  One or two sentences to put the results into a more **general context**.
-  
-  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
   
   
   

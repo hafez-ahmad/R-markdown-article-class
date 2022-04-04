@@ -11,22 +11,26 @@ author:
       - Conceptualization
       - Writing - Original Draft Preparation
       - Writing - Review & Editing
-  - name          : "Ernst-August Doelle"
+  - name          : "Your Name"
     affiliation   : "1,2"
+    email         :
+    address       :
     role:
       - Writing - Review & Editing
 
 affiliation:
   - id            : "1"
-    institution   : "Mississippi State University, "
+    institution   : "Mississippi State University"
   - id            : "2"
-    institution   : "Mississippi"
+    institution   : "Mississippi State University"
 
 authornote: |
   This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
 
 
-abstract: |
+abstract: | 
+I will write abstract after completing paper.
+
   
   
   

@@ -28,7 +28,7 @@ authornote: |
   This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
 
   
-Abstract: |
+abstract: |
   The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.
 
   
@@ -96,6 +96,7 @@ $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 
  Band 5-- reflection in the near-infrared spectrum 
  Band 4 -- reflection in the red range of the spectrum 
+ 
 ## Correlation analysis 
 
 Correlation analysis is a statistical method used to examine the relationship between two or more variables. The correlation coefficients range between -1 and 1. 0 indicates no relationship between variables, -1 indicates negative, and +1 indicates positive correlation.
@@ -106,9 +107,9 @@ $\rho_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_
 
 
 
-## land surface temperature and precipitation data analysis
+## Land surface temperature and precipitation data analysis
 
-```{r message=TRUE, warning=TRUE,echo=FALSE}
+```{r include = FALSE,echo=FALSE}
 # reading data
 lst<- read_csv("data/landsurface temperature2010_22.csv")
 Prci<-read_csv("data/Precipitation1998_19.csv")
@@ -253,9 +254,9 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 
 Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs). USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata.
 
-### Radiometric calibration and Atmospheric Correction
+### Radiometric calibration and Atmospheric Correction 
 
-1.  Conversion DN values to spectral radiance
+#### Conversion DN values to spectral radiance
 
 ```{r echo=FALSE}
 
@@ -270,7 +271,7 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 ```
 
-2.  Conversion of spectral radiance to reflectance
+#### Conversion of spectral radiance to reflectance
 
 ```{r echo=FALSE}
 
@@ -282,7 +283,7 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 ```
 
-# NDVI calculation
+
 
 ```{r echo=FALSE}
 
@@ -302,15 +303,11 @@ print(ndvi_2020_06_plot)
 
 ```
 
-# Classification
 
-## Statistical analysis
-
-## Land surface temperature and precipitation
-
-## Tests
 
 # Results
+
+
 
 ## Mapping
 
@@ -392,9 +389,9 @@ print(ndvi_2020_06_plot)
 
 ```
 
-# used R libraries
+## Land surface temperature and precipitation
 
-We used `r cite_r("r-references.bib")` for all our analyses.
+
 
 ```{r echo=FALSE}
 # date change character to date time from lubridate library
@@ -413,10 +410,7 @@ lst_description<- lst %>%
             SD=round(sd(LST_Day_1km,na.rm=TRUE),2))
 lst_description[,-1] <- printnum(lst_description[,-1])
 
-apa_table(lst_description,
-          caption = 'Descriptive statistics of Land surface temperature',
-          note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
-          escape = TRUE)
+
 ```
 
 ## precipiation works
@@ -432,17 +426,8 @@ prc_description<- Prci %>%
             SD=round(sd(precipitation,na.rm=TRUE),2))
 prc_description[,-1] <- printnum(prc_description[,-1])
 
-apa_table(prc_description,
-          caption = 'Descriptive statistics of Precipitation (mm/hr)',
-          note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
-          escape = TRUE)
-```
 
-```{r my-figure, fig.cap = "(ref:my-figure-caption)" }
-plot(cars)
 ```
-
-## Discussion
 
 ```{r echo=FALSE, results=FALSE}
 # they are used for writing 
@@ -450,11 +435,58 @@ tmp_mean<-mean(round(as.numeric(lst_description$Mean),0))
 tmp_sd<-mean(round(as.numeric(lst_description$SD),0))
 ```
 
-Monthly average temperature is `r printnum(tmp_mean)` [C] and standard deviation is `r printnum(tmp_sd)`
+Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$ (see table 1).
+```{r echo=FALSE, results=FALSE}
+
+lst_month<- ggplot(na.omit(lst)) +
+  aes(x = Month, y = LST_Day_1km, fill = Month) +
+  geom_boxplot(shape = "circle") +
+  scale_fill_hue(direction = 1) +
+  scale_color_hue(direction = 1) +
+  ggthemes::theme_wsj() +
+  theme(legend.position = "none")+
+ ggplot2::labs(
+    x = "Months",
+    y = "Land surface temperature (C)",
+    fill = "Month"
+  ) +
+  theme(axis.title.y = element_text(size=15))
+
+ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, width = 3,height = 2, units = "in")
+
+```
+
+![Boxplot of Land surface temperature  $0C$](Figures_or_Maps/lst_month.png)
+
+Monthly average temperature is `r printnum(tmp_mean)` $^0C$ and standard deviation is `r printnum(tmp_sd)`
+
+```{r}
+apa_table(lst_description,
+          caption = '1. Descriptive statistics of Land surface temperature',
+          note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
+          escape = TRUE)
+```
+
+Monthly precipitation data covered a period of over 20 years. During this period, the average precipitation rate ranged from 0.12 to 0.22 $mm/hr$. These rates remained relatively constant throughout the month. December to April had a higher precipitation rate of around 0.40 $mm/hr$, while August to November had a lower rate ranging from 0.05 to 0 $mm/hr$. 
+
+```{r}
+apa_table(prc_description,
+          caption = '2. Descriptive statistics of Precipitation (mm/hr)',
+          note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
+          escape = TRUE)
+```
+
+## Discussion
+
+
 
 # Conclusion
 
 \newpage
+
+# used R libraries
+
+We used `r cite_r("r-references.bib")` for all our analyses.
 
 # References
 

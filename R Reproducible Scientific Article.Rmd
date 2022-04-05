@@ -456,7 +456,11 @@ ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scal
 
 ```
 
-![Boxplot of Land surface temperature  $0C$](Figures_or_Maps/lst_month.png)
+
+```{r echo=FALSE,fig.cap='Boxplot of Land surface temperature'}
+knitr::include_graphics('Figures_or_Maps/lst_month.png')
+
+```
 
 Monthly average temperature is `r printnum(tmp_mean)` $^0C$ and standard deviation is `r printnum(tmp_sd)`
 
@@ -475,6 +479,11 @@ apa_table(prc_description,
           note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
           escape = TRUE)
 ```
+
+```{r echo=FALSE,fig.cap='Normalized Difference Vegetation Index Map of Oktibbeha County'}
+knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
+```
+
 
 ## Discussion
 

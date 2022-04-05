@@ -27,12 +27,10 @@ affiliation:
 authornote: |
   This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
 
-
-abstract: | 
-I will write abstract after completing paper.
-
   
-  
+Abstract: |
+  The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.
+
   
 keywords          : "Rmarkdown,GIS,Remote sensing,NDVI, Land use"
 wordcount         : "X"
@@ -71,44 +69,44 @@ r_refs("r-references.bib") # add all references
 
 # Introduction
 
-<p align="justify"> Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. 
+<p align="justify"> Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built up areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. 
 
 Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory ;@berlanga2002land].</p>
 
 Oktibbeha County experiences the hottest temperatures in July with an average high of $33^o$C.
 
-In this mini paper, the **objectives** are (a) to present results of an analysis of the land surface temperature and precipitation, (b) to quantify normalized vegetation index for three years and estimate the land use /land cover, (c) to determine the relationship  between vegetation and land use.
-# Methods
+In this mini paper, the **objectives** are (a) to present results of an analysis of the land surface temperature and precipitation data, (b) to quantify normalized vegetation index for three years and estimate the land use /land cover, (c) to determine the relationship  between vegetation and land use.
 
-## Participants (First and Last name (Your email))
-
-1.  Hafez Ahmad ([ha@msstate.edu](mailto:ha@msstate.edu){.email})
-
-# Material
+# Methods and Materials
 
 ## Study area
 
 Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
-## Procedure
+## Data collection
 
-Data source: Landsat8 imageries from 2020 to 2022 for February and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)" . Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" . Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis.
+Landsat8 imageries (land 8-9 OLI /tirs c2 l1    ) from 2020 to 2022 for February and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)" . Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" . Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis.
 
-## Vegetation and land-use change and land-cover change [2020_06,2021_02,2021_06,2022_02]
+## NDVI calculation
 
-NDVI is a dimensionless index that depicts the difference between the reflectance of vegetation in the visible and near-infrared spectrum.It can be used to assess changes in plant health and vegetation density [@tucker2001higher]. An NDVI is calculated as a ratio of the red (R) value and the near-infrared (NIR) value. It ranges from -1.0 to 1.0, mainly representing greens, where negative values are mainly made up of clouds, snow, and water, and values close to zero are primarily made up of rocks and bare soil. A very low NDVI value (0.1 or less) corresponds to empty areas of rocks, sand, or snow. Moderate values (between 0.2 and 0.3) represent shrubs and meadows, while large values (between 0.6 and 0.8) indicate temperate and tropical forests.
+For the vegetation analysis, we used Normalized Difference Vegetation Index (NDVI).NDVI is a dimensionless index that depicts the difference between the reflectance of vegetation in the visible and near-infrared spectrum.It can be used to assess changes in plant health and vegetation density [@tucker2001higher]. An NDVI is calculated as a ratio of the red (R) value and the near-infrared (NIR) value. It ranges from -1.0 to 1.0, mainly representing greens, where negative values are mainly made up of clouds, snow, and water, and values close to zero are primarily made up of rocks and bare soil. A very low NDVI value (0.1 or less) corresponds to empty areas of rocks, sand, or snow. Moderate values (between 0.2 and 0.3) represent shrubs and meadows, while large values (between 0.6 and 0.8) indicate temperate and tropical forests.
 
-for the Landsat 8, the formula is given $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
+for the Landsat 8, the formula is given 
+$NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 
  Band 5-- reflection in the near-infrared spectrum 
  Band 4 -- reflection in the red range of the spectrum 
- Correlation Coefficient 
+## Correlation analysis 
+
+Correlation analysis is a statistical method used to examine the relationship between two or more variables. The correlation coefficients range between -1 and 1. 0 indicates no relationship between variables, -1 indicates negative, and +1 indicates positive correlation.
+ The equation of Correlation Coefficient is given below.
+ 
 $\rho_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)\left(Y_{i}-\bar{Y}\right)}{\sqrt{{\Sigma}_{\Sigma_{i}=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} \sqrt{{\sum}_{\Sigma_{i}=1}^{n}\left(Y_{i}-\bar{Y}\right)^{2}}}$
 
 
-## Land use and land cover data
 
-### Data analysis
+
+## land surface temperature and precipitation data analysis
 
 ```{r message=TRUE, warning=TRUE,echo=FALSE}
 # reading data
@@ -117,32 +115,32 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 
 ```
 
-## Data preprocessing
+## Landsate satellite imageries preprocessing
 
-### land 8-9 OLI /tirs c2 l1
+
 
 ```{r message=FALSE, warning=FALSE,echo=FALSE}
 # loading raster and meta data 
 # Landsat 8-9 OLI/TIRS C2 L1
 # un zipping 
-for (i in 1:5){
-  untar(list.files()[i],exdir=substr(list.files()[i],1,40))
-  print(paste0('finished untaring /unzipping',list.files()[i]))}
-
-meta<- list.files('data/raster_vector',pattern = '.txt')
-meta
+# for (i in 1:5){
+#   untar(list.files()[i],exdir=substr(list.files()[i],1,40))
+#   print(paste0('finished untaring /unzipping',list.files()[i]))}
+# 
+# meta<- list.files('data/raster_vector',pattern = '.txt')
+# meta
 ```
 
 ```{r echo=FALSE}
 # empty vector 
-metafiles<- c()
-# append all names in the metafile vector 
-for (i in 1:4){
-  mfilesnames<-paste0('meta_',substr(meta[i],18,25))
-  metafiles<- c(metafiles, mfilesnames)
-}
-
-print(metafiles)
+# metafiles<- c()
+# # append all names in the metafile vector 
+# for (i in 1:4){
+#   mfilesnames<-paste0('meta_',substr(meta[i],18,25))
+#   metafiles<- c(metafiles, mfilesnames)
+# }
+# 
+# print(metafiles)
 ```
 
 ```{r}
@@ -317,80 +315,80 @@ print(ndvi_2020_06_plot)
 ## Mapping
 
 ```{r echo=FALSE}
-# reading training file
-sampl<- terra::vect('data/raster_vector/training_sample.shp')
-# Generate random sample
-ptsampl<-terra::spatSample(sampl,1000,method='random')
-# make a simple graph
-plot(ptsampl,'Classname')
-# lat long extract
-xy<-as.matrix(geom(ptsampl)[,c('x','y')])
-df<- raster::extract(data2020_06,xy)[,-1]
-sampdata<- data.frame(class=ptsampl$Classname,df)
-head(sampdata)
-
-
-# train model
-cartmodel<- rpart::rpart(as.factor(class)~., data=sampdata)
-plot(cartmodel,uniform=TRUE,main='classification tree')
-text(cartmodel,cex=1)
-# classify
-classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
-
-plot(classified)
-
-plot(classified$roads,col='grey')
-
-lulc<- which.max(classified)
-cls<- names(classified)
-cls
-
-df<- data.frame(id=1:5,class=cls)
-df
-
-levels(lulc)<- df
-
-lulc
-
-plot(lulc)
-
-# customized 
-mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
-plot(lulc,col=mycolor)
-#legend(-105.21,40.04)
-# svm 
-library(e1071)
-library(randomForest)
-# train model
-cartmodel<- randomForest(as.factor(class)~., data=sampdata)
-
-plot(cartmodel)
-# classify
-classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
-classified
-plot(classified)
-
-
-lulc<- which.max(classified)
-lulc
-
-names(classified)
-
-cls<- names(classified)
-cls
-
-df<- data.frame(id=1:5,class=cls)
-df
-
-levels(lulc)<- df
-
-
-# customized 
-bp<- c(1,2,3,4,5)
-mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
-plot(classified,col=mycolor,legend=FALSE)
-legend('bottomright',legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
-
+# # reading training file
+# sampl<- terra::vect('data/raster_vector/training_sample.shp')
+# # Generate random sample
+# ptsampl<-terra::spatSample(sampl,1000,method='random')
+# # make a simple graph
+# plot(ptsampl,'Classname')
+# # lat long extract
+# xy<-as.matrix(geom(ptsampl)[,c('x','y')])
+# df<- raster::extract(data2020_06,xy)[,-1]
+# sampdata<- data.frame(class=ptsampl$Classname,df)
+# head(sampdata)
+# 
+# 
+# # train model
+# cartmodel<- rpart::rpart(as.factor(class)~., data=sampdata)
+# plot(cartmodel,uniform=TRUE,main='classification tree')
+# text(cartmodel,cex=1)
+# # classify
+# classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
+# 
+# plot(classified)
+# 
+# plot(classified$roads,col='grey')
+# 
+# lulc<- which.max(classified)
+# cls<- names(classified)
+# cls
+# 
+# df<- data.frame(id=1:5,class=cls)
+# df
+# 
+# levels(lulc)<- df
+# 
+# lulc
+# 
+# plot(lulc)
+# 
+# # customized
+# mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
+# plot(lulc,col=mycolor)
+# #legend(-105.21,40.04)
+# # svm
+# library(e1071)
+# library(randomForest)
+# # train model
+# cartmodel<- randomForest(as.factor(class)~., data=sampdata)
+# 
+# plot(cartmodel)
+# # classify
+# classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
+# classified
+# plot(classified)
+# 
+# 
+# lulc<- which.max(classified)
+# lulc
+# 
+# names(classified)
+# 
+# cls<- names(classified)
+# cls
+# 
+# df<- data.frame(id=1:5,class=cls)
+# df
+# 
+# levels(lulc)<- df
+# 
+# 
+# # customized
+# bp<- c(1,2,3,4,5)
+# mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
+# plot(classified,col=mycolor,legend=FALSE)
+# legend('bottomright',legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
+# 
 
 ```
 

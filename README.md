@@ -15,10 +15,13 @@ Department of Wildlife, Fisheries and Aquaculture
 
 ## We can use citation add symbol [@Mukhopadhyay2018] 
 
-## initiate the upstream tracking of the project on the GitHub repo 
+## Initiate the upstream tracking of the project on the GitHub repo 
+
 git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.git>
 
 ## Pull all files from the GitHub repo (typically just readme, license, gitignore) git pull origin master/ main
+
+Remember 
 ## Pull means download 
 ## Push means upload
 ## Please comments for what your are doing and then push it

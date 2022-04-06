@@ -64,7 +64,7 @@ library(ggplot2)     # plotting
 library(gridExtra)   # plot arrangement
 library(lubridate)  # date time
 library(ggpubr) # arranging plots
-library(ggspatial)
+library(ggspatial) # annotation 
 r_refs("r-references.bib") # add all references 
 ```
 

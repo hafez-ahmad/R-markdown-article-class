@@ -64,6 +64,7 @@ library(ggplot2)     # plotting
 library(gridExtra)   # plot arrangement
 library(lubridate)  # date time
 library(ggpubr) # arranging plots
+library(ggspatial)
 r_refs("r-references.bib") # add all references 
 ```
 
@@ -287,7 +288,6 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 
 ```{r echo=FALSE}
-
 data2020_06<- raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif')
 names(data2020_06)<-paste0(rep("B", times = 10, length.out = NA, each = 1),1:10)
 #NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}
@@ -297,13 +297,47 @@ breaks <- seq(-1, 1, by = 0.09)
 cols <- colorRampPalette(c("red", "yellow", "lightgreen"))(length(breaks) - 1)
 ndvi_2020_06<- raster::projectRaster(ndvi_2020_06,crs="+proj=longlat +datum=WGS84 +no_defs ")
 ## Use `at` and `col.regions` arguments to set the color scheme
-ndvi_2020_06_plot<-rasterVis::levelplot(ndvi_2020_06, at = breaks, col.regions = cols)
-# saving plot
-png(file = "Figures_or_Maps/ndvi_2020_06.png", bg = "transparent", width=1800, height=1800, res=300)
-print(ndvi_2020_06_plot)
+# ndvi_2020_06_plot<-rasterVis::levelplot(ndvi_2020_06, at = breaks, col.regions = cols)
+# # saving plot
+# png(file = "Figures_or_Maps/ndvi_2020_06.png", bg = "transparent", width=1800, height=1800, res=300)
+# print(ndvi_2020_06_plot)
 
+
+reclass<-matrix(c(-Inf,-1,0,
+                  -1,0,1,
+                  -1,0,1),ncol=3)
+# reclassify the raster using the reclass object - reclass_m
+chm_classified <- reclassify(ndvi_2020_06,
+                     reclass)
+
+ndvi2020_2<- ggplot(data = as.data.frame(chm_classified ,xy=TRUE)) +
+  #geom_raster(aes(x = x, y = y, fill = as.character(layer))) + 
+  geom_tile(aes(x, y, fill=as.character(layer)))+
+  scale_fill_manual(name = "NDVI",
+                    values = c('black','red','grey','green'),
+                    labels = c('No data','Bed','baresoil','Good'),
+                    na.translate = FALSE) +
+  coord_sf(expand = F,crs=3160) +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        panel.background = element_rect(fill = "white", color = "black"))+
+  # spatial-aware automagic scale bar
+  annotation_scale(location = "tl") +
+  # spatial-aware automagic north arrow
+  annotation_north_arrow(location = "br", which_north = "true")
+
+ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndvi2020_2,device="png",dpi=500)
 ```
 
+```{r echo=FALSE}
+# #library(magick)
+# # may be fixed later
+# ndvifile<- image_read('Figures_or_Maps/ndvi_2020_06.png')
+# right_png <- image_convert(ndvifile, "png")
+# image_write(right_png, path = "Figures_or_Maps/ndvi_2020_06.png", format = "png")
+```
 
 
 # Results
@@ -312,18 +346,9 @@ print(ndvi_2020_06_plot)
 
 ## Mapping
 
+
 ```{r echo=FALSE}
-
-# # customized
-# bp<- c(1,2,3,4,5)
-# mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
-# plot(classified,col=mycolor,legend=FALSE)
-# legend('bottomright',legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
-# aggregate(getValues(area(r, weights=FALSE)), by=list(getValues(r)), sum)
-
-```
-```{r}
-classify_raster<- function(trainshp, rasterfile){
+classify_raster <- function(trainshp, rasterfile){
   # training sample
   sampl<- terra::vect(trainshp)
   # random sample
@@ -349,23 +374,29 @@ classify_raster<- function(trainshp, rasterfile){
   return(c(classified,df,calculated_Area))
 
 }
-classified2020<-classify_raster('data/raster_vector/training_sample.shp',data2020_06)
-
-p2020_2<- ggplot(data = data) +
+# apply function 
+classified2020<-classify_raster('data/raster_vector/training_sample.shp',raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif'))
+# plotting 
+p2020_2<- ggplot(data = as.data.frame(classified2020[[1]],xy=TRUE)) +
   geom_raster(aes(x = x, y = y, fill = as.character(layer_value))) + 
   scale_fill_manual(name = "Land cover",
                     values = c("#CDC0B0", "#FF4040", "#EED5B7", "#458B00", "#104E8B"),
                     labels = c('Baresoil','Built up','Roads','Vegetation','Water'),
                     na.translate = FALSE) +
-  coord_sf(expand = F) +
+  coord_sf(expand = F,crs=3160) +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "white", color = "black"))
+        panel.background = element_rect(fill = "white", color = "black"))+
+  # spatial-aware automagic scale bar
+  annotation_scale(location = "tl") +
+  # spatial-aware automagic north arrow
+  annotation_north_arrow(location = "br", which_north = "true")
 
+# subplots
 landcover<-ggarrange(p2020_2, p2020_2, p2020_2,p2020_2,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
-
+# save it 
 ggsave("Figures_or_Maps/landcover.png",plot=landcover,device="png",dpi=500)
 ```
 
@@ -432,7 +463,8 @@ lst_month<- ggplot(na.omit(lst)) +
   ) +
   theme(axis.title.y = element_text(size=15))
 
-ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, width = 3,height = 2, units = "in")
+#ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, #width = 3,height = 2, units = "in")
+ggsave("Figures_or_Maps/lst_month.png",plot=landcover,device="png",dpi=500)
 
 ```
 

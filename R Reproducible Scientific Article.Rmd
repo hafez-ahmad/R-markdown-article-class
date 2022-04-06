@@ -312,80 +312,44 @@ print(ndvi_2020_06_plot)
 ## Mapping
 
 ```{r echo=FALSE}
-# # reading training file
-# sampl<- terra::vect('data/raster_vector/training_sample.shp')
-# # Generate random sample
-# ptsampl<-terra::spatSample(sampl,1000,method='random')
-# # make a simple graph
-# plot(ptsampl,'Classname')
-# # lat long extract
-# xy<-as.matrix(geom(ptsampl)[,c('x','y')])
-# df<- raster::extract(data2020_06,xy)[,-1]
-# sampdata<- data.frame(class=ptsampl$Classname,df)
-# head(sampdata)
-# 
-# 
-# # train model
-# cartmodel<- rpart::rpart(as.factor(class)~., data=sampdata)
-# plot(cartmodel,uniform=TRUE,main='classification tree')
-# text(cartmodel,cex=1)
-# # classify
-# classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
-# 
-# plot(classified)
-# 
-# plot(classified$roads,col='grey')
-# 
-# lulc<- which.max(classified)
-# cls<- names(classified)
-# cls
-# 
-# df<- data.frame(id=1:5,class=cls)
-# df
-# 
-# levels(lulc)<- df
-# 
-# lulc
-# 
-# plot(lulc)
-# 
-# # customized
-# mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
-# plot(lulc,col=mycolor)
-# #legend(-105.21,40.04)
-# # svm
-# library(e1071)
-# library(randomForest)
-# # train model
-# cartmodel<- randomForest(as.factor(class)~., data=sampdata)
-# 
-# plot(cartmodel)
-# # classify
-# classified<- predict(data2020_06,cartmodel,na.rm=TRUE)
-# classified
-# plot(classified)
-# 
-# 
-# lulc<- which.max(classified)
-# lulc
-# 
-# names(classified)
-# 
-# cls<- names(classified)
-# cls
-# 
-# df<- data.frame(id=1:5,class=cls)
-# df
-# 
-# levels(lulc)<- df
-# 
-# 
+
 # # customized
 # bp<- c(1,2,3,4,5)
 # mycolor<- c('green','red','darkkhaki','darkorange','antiquewhite4')
 # plot(classified,col=mycolor,legend=FALSE)
 # legend('bottomright',legend= sampl$Classname,fill=c('blue','green','darkkhaki','antiquewhite4','red'),bty='n',bg='transparent')
-# 
+# aggregate(getValues(area(r, weights=FALSE)), by=list(getValues(r)), sum)
+
+```
+```{r}
+classify_raster<- function(trainshp, rasterfile){
+  # training sample
+  sampl<- terra::vect(trainshp)
+  # random sample
+  ptsampl<- terra::spatSample(sampl,1000,method='random')
+  # make matrix
+  xy<-as.matrix(geom(ptsampl)[,c('x','y')])
+  # extract data
+  df<- raster::extract(rasterfile,xy)[,-1]
+  # data frame of sample
+  sampdata<- data.frame(class=ptsampl$Classname,df)
+  # set up model and train model
+  cartmodel<-rpart::rpart(as.factor(class)~., data=sampdata)
+  # predict classes
+  classified<- predict(rasterfile,cartmodel,type='class',na.rm=TRUE)
+  lulc<- which.max(classified)
+  cls<- names(classified)
+  df<- data.frame(id=1:5,class=cls)
+  levels(lulc)<- df
+  calculated_Area<-as.data.frame(zonal(area(classified),classified2020[[1]],'sum'))
+  colnames(calculated_Area)<- c('class','area_km')
+ calculated_Area$class<- c('Baresoil','Built up','Roads','Vegetation','Water')
+ calculated_Area$area_km<- calculated_Area$area_km/1e+6
+  return(c(classified,df,calculated_Area))
+
+}
+classified2020<-classify_raster('data/raster_vector/training_sample.shp',data2020_06)
+
 
 ```
 

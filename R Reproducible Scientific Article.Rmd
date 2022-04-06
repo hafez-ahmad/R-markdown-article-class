@@ -63,6 +63,7 @@ library(RStoolbox)   # Image analysis
 library(ggplot2)     # plotting
 library(gridExtra)   # plot arrangement
 library(lubridate)  # date time
+library(ggpubr) # arranging plots
 r_refs("r-references.bib") # add all references 
 ```
 
@@ -341,7 +342,7 @@ classify_raster<- function(trainshp, rasterfile){
   cls<- names(classified)
   df<- data.frame(id=1:5,class=cls)
   levels(lulc)<- df
-  calculated_Area<-as.data.frame(zonal(area(classified),classified2020[[1]],'sum'))
+  calculated_Area<-as.data.frame(zonal(area(classified),classified,'sum'))
   colnames(calculated_Area)<- c('class','area_km')
  calculated_Area$class<- c('Baresoil','Built up','Roads','Vegetation','Water')
  calculated_Area$area_km<- calculated_Area$area_km/1e+6
@@ -350,7 +351,22 @@ classify_raster<- function(trainshp, rasterfile){
 }
 classified2020<-classify_raster('data/raster_vector/training_sample.shp',data2020_06)
 
+p2020_2<- ggplot(data = data) +
+  geom_raster(aes(x = x, y = y, fill = as.character(layer_value))) + 
+  scale_fill_manual(name = "Land cover",
+                    values = c("#CDC0B0", "#FF4040", "#EED5B7", "#458B00", "#104E8B"),
+                    labels = c('Baresoil','Built up','Roads','Vegetation','Water'),
+                    na.translate = FALSE) +
+  coord_sf(expand = F) +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        panel.background = element_rect(fill = "white", color = "black"))
 
+landcover<-ggarrange(p2020_2, p2020_2, p2020_2,p2020_2,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
+
+ggsave("Figures_or_Maps/landcover.png",plot=landcover,device="png",dpi=500)
 ```
 
 ## Land surface temperature and precipitation
@@ -448,7 +464,10 @@ apa_table(prc_description,
 knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
 ```
 
+```{r echo=FALSE,fig.cap='Land cover /Land use map of oktibbeha county  '}
+knitr::include_graphics('Figures_or_Maps/landcover.png')
 
+```
 ## Discussion
 
 

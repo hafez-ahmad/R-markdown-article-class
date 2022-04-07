@@ -29,11 +29,11 @@ authornote: |
 
   
 abstract: |
-  The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.
+  The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$.
 
   
 keywords          : "Rmarkdown,GIS,Remote sensing,NDVI, Land use"
-wordcount         : "X"
+wordcount         : "1632"
 
 bibliography      : ["r-references.bib"]
 
@@ -74,6 +74,8 @@ r_refs("r-references.bib") # add all references
 <p align="justify"> Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built up areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. 
 
 Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory ;@berlanga2002land].</p>
+
+Land cover changes can occur as a result of both human and climate drivers. For example, the demand for new settlements often results in the permanent loss of natural land, resulting in changes in the weather patterns, temperature, and precipitation [@hale2006land;@pielke2007overview]. Disturbance events such as wildfire and timber harvest are important factors influencing land cover. From 1985 to 2010, forest disturbances affected an average of approximately 11200 square miles per year in the contiguous United States, according to the North American forest dynamic dataset. The rate of forest disturbance decreased by about one-third between 2006 and 2010[@reidmiller2019fourth].
 
 Oktibbeha County experiences the hottest temperatures in July with an average high of $33^o$C.
 
@@ -315,7 +317,7 @@ ndvi2020_2<- ggplot(data = as.data.frame(chm_classified ,xy=TRUE)) +
   geom_tile(aes(x, y, fill=as.character(layer)))+
   scale_fill_manual(name = "NDVI",
                     values = c('black','red','grey','green'),
-                    labels = c('No data','Bed','baresoil','Good'),
+                    labels = c('No data','No vegetation','Baresoil','Good'),
                     na.translate = FALSE) +
   coord_sf(expand = F,crs=3160) +
   theme(axis.title.x = element_blank(),
@@ -327,8 +329,10 @@ ndvi2020_2<- ggplot(data = as.data.frame(chm_classified ,xy=TRUE)) +
   annotation_scale(location = "tl") +
   # spatial-aware automagic north arrow
   annotation_north_arrow(location = "br", which_north = "true")
-
-ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndvi2020_2,device="png",dpi=500)
+# subplots
+ndviplot<-ggarrange(ndvi2020_2, ndvi2020_2, ndvi2020_2,ndvi2020_2,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
+# save it
+ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
 ```
 
 ```{r echo=FALSE}
@@ -340,7 +344,7 @@ ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndvi2020_2,device="png",dpi=500)
 ```
 
 
-# Results
+# Results and discussions
 
 
 
@@ -447,7 +451,7 @@ tmp_sd<-mean(round(as.numeric(lst_description$SD),0))
 ```
 
 Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$ (see table 1).
-```{r echo=FALSE, results=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, results=FALSE}
 
 lst_month<- ggplot(na.omit(lst)) +
   aes(x = Month, y = LST_Day_1km, fill = Month) +
@@ -464,10 +468,29 @@ lst_month<- ggplot(na.omit(lst)) +
   theme(axis.title.y = element_text(size=15))
 
 #ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, #width = 3,height = 2, units = "in")
-ggsave("Figures_or_Maps/lst_month.png",plot=landcover,device="png",dpi=500)
+ggsave("Figures_or_Maps/lst_month.png",plot=lst_month,device="png",dpi=500)
 
 ```
+```{r echo=FALSE, message=FALSE, warning=FALSE, results=FALSE}
 
+pre_month<- ggplot(na.omit(Prci)) +
+  aes(x = Month, y = precipitation, fill = Month) +
+  geom_boxplot(shape = "circle") +
+  scale_fill_hue(direction = 1) +
+  scale_color_hue(direction = 1) +
+  ggthemes::theme_wsj() +
+  theme(legend.position = "none")+
+ ggplot2::labs(
+    x = "Months",
+    y = "Monthly Precipitation (mm/hr)",
+    fill = "Month"
+  ) +
+  theme(axis.title.y = element_text(size=15))
+
+#ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, #width = 3,height = 2, units = "in")
+ggsave("Figures_or_Maps/pre_month.png",plot=pre_month,device="png",dpi=500)
+
+```
 
 ```{r echo=FALSE,fig.cap='Boxplot of Land surface temperature'}
 knitr::include_graphics('Figures_or_Maps/lst_month.png')
@@ -476,18 +499,25 @@ knitr::include_graphics('Figures_or_Maps/lst_month.png')
 
 Monthly average temperature is `r printnum(tmp_mean)` $^0C$ and standard deviation is `r printnum(tmp_sd)`
 
-```{r}
+
+```{r echo=FALSE,fig.cap='Boxplot of Monthly Precipitation (mm/hr)'}
+knitr::include_graphics('Figures_or_Maps/pre_month.png')
+
+```
+
+```{r echo=FALSE}
+
 apa_table(lst_description,
-          caption = '1. Descriptive statistics of Land surface temperature',
+          caption = 'Table 1. Descriptive statistics of Land surface temperature',
           note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
           escape = TRUE)
 ```
 
 Monthly precipitation data covered a period of over 20 years. During this period, the average precipitation rate ranged from 0.12 to 0.22 $mm/hr$. These rates remained relatively constant throughout the month. December to April had a higher precipitation rate of around 0.40 $mm/hr$, while August to November had a lower rate ranging from 0.05 to 0 $mm/hr$. 
 
-```{r}
+```{r echo=FALSE}
 apa_table(prc_description,
-          caption = '2. Descriptive statistics of Precipitation (mm/hr)',
+          caption = 'Table 2. Descriptive statistics of Precipitation (mm/hr)',
           note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
           escape = TRUE)
 ```
@@ -500,11 +530,12 @@ knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
 knitr::include_graphics('Figures_or_Maps/landcover.png')
 
 ```
-## Discussion
+
 
 
 
 # Conclusion
+The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$.
 
 \newpage
 

@@ -335,6 +335,7 @@ ndviplot<-ggarrange(ndvi2020_2, ndvi2020_2, ndvi2020_2,ndvi2020_2,nrow = 2,ncol=
 ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
 ```
 ```{r echo=FALSE}
+# ndvi function
 ndvi_plot<-function(raster_data){
   datast<- raster::stack(raster_data)
   names(datast)<-paste0(rep("B", times = 10, length.out = NA, each = 1),1:10)

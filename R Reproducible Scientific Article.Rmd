@@ -65,6 +65,7 @@ library(gridExtra)   # plot arrangement
 library(lubridate)  # date time
 library(ggpubr) # arranging plots
 library(ggspatial) # annotation 
+library(reshape2)
 r_refs("r-references.bib") # add all references 
 ```
 
@@ -290,51 +291,6 @@ Landsat sensors capture reflected energy and store data as 8-bit digital numbers
 
 
 ```{r echo=FALSE}
-data2020_06<- raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif')
-names(data2020_06)<-paste0(rep("B", times = 10, length.out = NA, each = 1),1:10)
-#NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}
-ndvi_2020_06<- (data2020_06$B5-data2020_06$B4/data2020_06$B5+data2020_06$B4)
-## Set up color gradient with 100 values between 0.0 and 1.0
-breaks <- seq(-1, 1, by = 0.09)
-cols <- colorRampPalette(c("red", "yellow", "lightgreen"))(length(breaks) - 1)
-ndvi_2020_06<- raster::projectRaster(ndvi_2020_06,crs="+proj=longlat +datum=WGS84 +no_defs ")
-## Use `at` and `col.regions` arguments to set the color scheme
-# ndvi_2020_06_plot<-rasterVis::levelplot(ndvi_2020_06, at = breaks, col.regions = cols)
-# # saving plot
-# png(file = "Figures_or_Maps/ndvi_2020_06.png", bg = "transparent", width=1800, height=1800, res=300)
-# print(ndvi_2020_06_plot)
-
-
-reclass<-matrix(c(-Inf,-1,0,
-                  -1,0,1,
-                  -1,0,1),ncol=3)
-# reclassify the raster using the reclass object - reclass_m
-chm_classified <- reclassify(ndvi_2020_06,
-                     reclass)
-
-ndvi2020_2<- ggplot(data = as.data.frame(chm_classified ,xy=TRUE)) +
-  #geom_raster(aes(x = x, y = y, fill = as.character(layer))) + 
-  geom_tile(aes(x, y, fill=as.character(layer)))+
-  scale_fill_manual(name = "NDVI",
-                    values = c('black','red','grey','green'),
-                    labels = c('No data','No vegetation','Baresoil','Good'),
-                    na.translate = FALSE) +
-  coord_sf(expand = F,crs=3160) +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "white", color = "black"))+
-  # spatial-aware automatic scale bar
-  annotation_scale(location = "tl") +
-  # spatial-aware automatic north arrow
-  annotation_north_arrow(location = "br", which_north = "true")
-# subplots
-ndviplot<-ggarrange(ndvi2020_2, ndvi2020_2, ndvi2020_2,ndvi2020_2,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
-# save it
-ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
-```
-```{r echo=FALSE}
 # ndvi function
 ndvi_plot<-function(raster_data){
   datast<- raster::stack(raster_data)
@@ -399,6 +355,8 @@ ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
 
 
 ```{r echo=FALSE}
+# land use / land cover classification function 
+# it requires training sample, and then train model and predict classes
 classify_raster <- function(trainshp, rasterfile){
   # training sample
   sampl<- terra::vect(trainshp)
@@ -411,7 +369,8 @@ classify_raster <- function(trainshp, rasterfile){
   # data frame of sample
   sampdata<- data.frame(class=ptsampl$Classname,df)
   # set up model and train model
-  cartmodel<-rpart::rpart(as.factor(class)~., data=sampdata)
+  #cartmodel<-rpart::rpart(as.factor(class)~., data=sampdata)
+  cartmodel<-randomForest::randomForest(as.factor(class)~., data=sampdata)
   # predict classes
   classified<- predict(rasterfile,cartmodel,type='class',na.rm=TRUE)
   lulc<- which.max(classified)
@@ -426,13 +385,21 @@ classify_raster <- function(trainshp, rasterfile){
 
 }
 # apply function 
-classified2020<-classify_raster('data/raster_vector/training_sample.shp',raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif'))
-# plotting 
-p2020_2<- ggplot(data = as.data.frame(classified2020[[1]],xy=TRUE)) +
+# multiband raster files
+classified2020_6<-classify_raster('data/raster_vector/2020_06.shp',raster::stack('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1.tif'))
+
+classified2021_2<-classify_raster('data/raster_vector/2020_06.shp',raster::stack('data/raster_vector/LC08_L1TP_022037_20210223_20210303_02_T1.tif'))
+classified2021_6<-classify_raster('data/raster_vector/2020_06.shp',raster::stack('data/raster_vector/LC08_L1TP_022037_20210615_20210622_02_T1.tif'))
+
+classified2022_3<-classify_raster('data/raster_vector/2020_06.shp',raster::stack('data/raster_vector/LC08_L1TP_022037_20220314_20220322_02_T1.tif'))
+
+
+landusmap<-function(data){
+ggplot(data =data ) +
   geom_raster(aes(x = x, y = y, fill = as.character(layer_value))) + 
   scale_fill_manual(name = "Land cover",
-                    values = c("#CDC0B0", "#FF4040", "#EED5B7", "#458B00", "#104E8B"),
-                    labels = c('Baresoil','Built up','Roads','Vegetation','Water'),
+                    values = c("#FFD700", "#FF4040", "#DCDCDC", "#458B00", "#104E8B"),
+                    labels = c('Baresoil','Built up','Roads/Highway','Vegetation','Water'),
                     na.translate = FALSE) +
   coord_sf(expand = F,crs=3160) +
   theme(axis.title.x = element_blank(),
@@ -441,18 +408,65 @@ p2020_2<- ggplot(data = as.data.frame(classified2020[[1]],xy=TRUE)) +
         axis.text.y = element_blank(),
         panel.background = element_rect(fill = "white", color = "black"))+
   # spatial-aware automagic scale bar
-  annotation_scale(location = "tl") +
+  annotation_scale(location = "bl") +
   # spatial-aware automagic north arrow
-  annotation_north_arrow(location = "br", which_north = "true")
+  annotation_north_arrow(location = "br", which_north = "true",height = unit(1.5, "cm"),width = unit(1, "cm"))
+}
+
+# plotting 
+p2020_2<- landusmap(as.data.frame(classified2020_6[[1]],xy=TRUE))
+#classified2021_2
+p2021_2<- landusmap(as.data.frame(classified2021_2[[1]],xy=TRUE))
+p2021_6<- landusmap(as.data.frame(classified2021_6[[1]],xy=TRUE))
+p2022_3<- landusmap(as.data.frame(classified2022_3[[1]],xy=TRUE))
 
 # subplots
-landcover<-ggarrange(p2020_2, p2020_2, p2020_2,p2020_2,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
+landcover<-ggarrange(p2020_2, p2021_2, p2021_6,p2022_3,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
 # save it 
 ggsave("Figures_or_Maps/landcover.png",plot=landcover,device="png",dpi=500)
 ```
 
-## Land surface temperature and precipitation
 
+```{r echo=FALSE}
+landdf<- as.data.frame(classified2020_6[4])
+landdf$AreaKm2020_2<-classified2020_6$area_km
+landdf$AreaKm2021_2<-classified2021_2$area_km
+landdf$AreaKm2021_6<-classified2021_6$area_km
+landdf$AreaKm2022_3<-classified2022_3$area_km
+landdf<- melt(landdf)
+names(landdf)<- c('landcover','Year','AreaKm')
+
+
+levels(landdf$Year)[levels(landdf$Year)=='AreaKm2020_2']<-"Feb,2020"
+levels(landdf$Year)[levels(landdf$Year)=='AreaKm2021_2']<-"Feb,2021"
+levels(landdf$Year)[levels(landdf$Year)=='AreaKm2021_6']<-"Jun 2021"
+levels(landdf$Year)[levels(landdf$Year)=='AreaKm2022_3']<-"Mar,2022"
+
+
+landcoverbar<-ggplot(landdf) +
+  aes(x = landcover, fill = landcover, weight = AreaKm) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Baresoil = "#FFD700",
+    `Built up` = "#FF4040",
+    Roads = "#DCDCDC",
+    Vegetation = "#458B00",
+    Water = "#104E8B")
+  ) +
+  labs(
+    x = "Land cover",
+    y = "Area Sqaured Kilometer",
+    title = ""
+  ) +
+  ggthemes::theme_stata() +
+  theme(legend.position = "none") +
+  facet_wrap(vars(Year))
+
+# save it 
+ggsave("Figures_or_Maps/landcoverbar.png",plot=landcoverbar,device="png",dpi=500)
+```
+
+## Land surface temperature and precipitation
 
 
 ```{r echo=FALSE}
@@ -573,16 +587,21 @@ apa_table(prc_description,
 knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
 ```
 
+Looking at the image, it is understood that every year due to the development of the city, the vegetation is changing in one place or another. The change between red and green is clearly seen in the image.
+
 ```{r echo=FALSE,fig.cap='Land cover /Land use map of oktibbeha county  '}
 knitr::include_graphics('Figures_or_Maps/landcover.png')
 
 ```
 
 
-
+```{r echo=FALSE,fig.cap='Land cover /Land use barplot of oktibbeha county'}
+knitr::include_graphics('Figures_or_Maps/landcoverbar.png')
+```
+According to the figure, the most variable land cover classes are bare soil, roads/highways, and vegetation. 
 
 # Conclusion
-The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$.
+The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Image classification is so accurate because training samples were very small. The other potential reason is that Feb, march, and June were collected for 30-meter resolution.  So satellites images had lower resolution and large cloud coverage. Cloud be removed further advanced analysis but this study has designated for only Spring 2022.
 
 \newpage
 

@@ -78,7 +78,6 @@ Local and place-specific global climate change (LULCC) is a type of global clima
 
 Land cover changes can occur as a result of both human and climate drivers. For example, the demand for new settlements often results in the permanent loss of natural land, resulting in changes in the weather patterns, temperature, and precipitation [@hale2006land;@pielke2007overview]. Disturbance events such as wildfire and timber harvest are important factors influencing land cover. From 1985 to 2010, forest disturbances affected an average of approximately 11200 square miles per year in the contiguous United States, according to the North American forest dynamic dataset. The rate of forest disturbance decreased by about one-third between 2006 and 2010[@reidmiller2019fourth].
 
-Oktibbeha County experiences the hottest temperatures in July with an average high of $33^o$C.
 
 In this mini paper, the **objectives** are (a) to present results of an analysis of the land surface temperature and precipitation data, (b) to quantify normalized vegetation index for three years and estimate the land use /land cover, (c) to determine the relationship  between vegetation and land use.
 
@@ -86,7 +85,19 @@ In this mini paper, the **objectives** are (a) to present results of an analysis
 
 ## Study area
 
-Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
+Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. Its area is approximately 118 square kilometers, and it borders six other counties: Lowndes, Winstons, Noxubee, Webster, Choctaw, and Claw. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
+
+
+
+
+```{r echo=FALSE,fig.cap='Land cover /Land use barplot of Oktibbeha county'}
+shp <- readOGR('data/raster_vector/Oktibbeha.shp')
+shp<- fortify(shp)
+Oktibbeha<- ggplot() + geom_polygon(data = shp, aes(x = long, y = lat, group = group), colour = "black", fill = 'grey')
+ggsave("Figures_or_Maps/Oktibbeha.png",plot=Oktibbeha,device="png",dpi=500)
+knitr::include_graphics('Figures_or_Maps/Oktibbeha.png')
+```
+Oktibbeha County and the city of Starkville are thriving communities that have grown dramatically in the last fifty years. The central east/west corridor connecting Mississippi and Alabama is US Highway 82. It cuts through the northern half of Oktibbeha County and serves as the primary regional transportation network. The county has a diverse landscape and terrain, including small lakes, creeks, swamps, forests, etc.One-third of the country is flatwood, which is well suited to growing pine timber. The remainder of the county on the western side is very productive of pine timber and produces row crops well, especially if fertilized [@fox1905oktibbeha]. When creating a land-use map, residential areas to industrial areas are considered built up, lakes, rivers, canals, and wetland areas are considered water, and more miniature forests to densely forested areas, including parks, are considered vegetation. It is located within three physiographic regions. The eastern portion extends into the black or northeastern Prairie regions, while the Pontotoc ridge bounds the western portion. Interior Flatwoods encompass the western portion of the county. Predominantly pine-covered regions in the southeastern United States are also found. The county's elevation ranges from 50m in the Tibble Creek floodplain in the northeastern corner to 180m in the southwestern corner[@leidolf2002flora;@brent1973soil].
 
 ## Data collection
 
@@ -100,6 +111,7 @@ for the Landsat 8, the formula is given
 $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 
  Band 5-- reflection in the near-infrared spectrum 
+ 
  Band 4 -- reflection in the red range of the spectrum 
  
 ## Correlation analysis 
@@ -107,8 +119,8 @@ $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 Correlation analysis is a statistical method used to examine the relationship between two or more variables. The correlation coefficients range between -1 and 1. 0 indicates no relationship between variables, -1 indicates negative, and +1 indicates positive correlation.
  The equation of Correlation Coefficient is given below.
  
-$\rho_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)\left(Y_{i}-\bar{Y}\right)}{\sqrt{{\Sigma}_{\Sigma_{i}=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} \sqrt{{\sum}_{\Sigma_{i}=1}^{n}\left(Y_{i}-\bar{Y}\right)^{2}}}$
-
+$r_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)\left(Y_{i}-\bar{Y}\right)}{\sqrt{{\Sigma}_{\Sigma_{i}=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} \sqrt{{\sum}_{\Sigma_{i}=1}^{n}\left(Y_{i}-\bar{Y}\right)^{2}}}$
+ where X and Y are variables.
 
 
 
@@ -149,7 +161,7 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 # print(metafiles)
 ```
 
-```{r}
+```{r echo=FALSE}
 # read meta data 
 #meta_20191203<- readMeta('data/raster_vector/LC08_L1TP_022037_20220314_20220322_02_T1_MTL.txt')
 
@@ -509,6 +521,7 @@ tmp_sd<-mean(round(as.numeric(lst_description$SD),0))
 ```
 
 Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$ (see table 1).
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results=FALSE}
 
 lst_month<- ggplot(na.omit(lst)) +
@@ -571,7 +584,7 @@ apa_table(lst_description,
           escape = TRUE)
 ```
 
-Monthly precipitation data covered a period of over 20 years. During this period, the average precipitation rate ranged from 0.12 to 0.22 $mm/hr$. These rates remained relatively constant throughout the month. December to April had a higher precipitation rate of around 0.40 $mm/hr$, while August to November had a lower rate ranging from 0.05 to 0 $mm/hr$. 
+Monthly land surface temperature.
 
 ```{r echo=FALSE}
 apa_table(prc_description,
@@ -580,22 +593,26 @@ apa_table(prc_description,
           escape = TRUE)
 ```
 
+Monthly precipitation data covered a period of over 20 years. During this period, the average precipitation rate ranged from 0.12 to 0.22 $mm/hr$. These rates remained relatively constant throughout the month. December to April had a higher precipitation rate of around 0.40 $mm/hr$, while August to November had a lower rate ranging from 0.05 to 0 $mm/hr$. 
+
 ```{r echo=FALSE,fig.cap='Normalized Difference Vegetation Index Map of Oktibbeha County'}
 knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
 ```
 
 Looking at the image, it is understood that every year due to the development of the city, the vegetation is changing in one place or another. The change between red and green is clearly seen in the image.
 
-```{r echo=FALSE,fig.cap='Land cover /Land use map of oktibbeha county  '}
+```{r echo=FALSE,fig.cap='Land cover /Land use map of Oktibbeha county  '}
 knitr::include_graphics('Figures_or_Maps/landcover.png')
 
 ```
 
 
-```{r echo=FALSE,fig.cap='Land cover /Land use barplot of oktibbeha county'}
+```{r echo=FALSE,fig.cap='Land cover /Land use barplot of Oktibbeha county'}
 knitr::include_graphics('Figures_or_Maps/landcoverbar.png')
 ```
 According to the figure, the most variable land cover classes are bare soil, roads/highways, and vegetation. 
+
+As a result of the subtropical latitude of Oktibbeha county and the extensive lands to the north, the county's climate is warm and humid. It is also influenced by warm temperatures from the Gulf of Mexico [@brent1973soil]. The average annual precipitation is 141.86 cm, with monthly precipitation ranging from 8.23 cm in October to 15.24 cm in March. The wettest seasons are winter and spring, with fall being the driest. Snow is uncommon and only lasts for a short time on the ground. The average temperature in this county ranges from 5.2 degrees Celsius in January to a high of 27 degrees Celsius in July. The average number of frost-free days (above O degrees C) in a year is 226[@leidolf2002flora]. 
 
 # Conclusion
 The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Image classification is so accurate because training samples were very small. The other potential reason is that Feb, march, and June were collected for 30-meter resolution.  So satellites images had lower resolution and large cloud coverage. Cloud be removed further advanced analysis but this study has designated for only Spring 2022.

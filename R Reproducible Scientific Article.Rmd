@@ -310,35 +310,33 @@ $K_2$  =Band-specific thermal conversion constant from the metadata (K2_CONSTANT
 
 ```
 
-#### Conversion of spectral radiance to reflectance
+#### Temperature conversion
 
 ```{r echo=FALSE}
 # temperature conversion
 band_10<-raster('LC08_L1TP_022037_20200221_20200822_02_T1_B10.TIF')
 band_11<-raster('LC08_L1TP_022037_20200221_20200822_02_T1_B11.TIF')
-RADIANCE_ADD_BAND_10 = 0.10000
-RADIANCE_ADD_BAND_11 = 0.10000
-RADIANCE_MULT_BAND_10 = 3.3420E-04
-RADIANCE_MULT_BAND_11 = 3.3420E-04
+RADIANCE_ADD_BAND_10 <- metadata1$CALRAD$offset[10] # RADIANCE_ADD_BAND 
+RADIANCE_ADD_BAND_11<-metadata1$CALRAD$offset[11] # RADIANCE_ADD_BAND 
+RADIANCE_MULT_BAND_10<-metadata1$CALRAD$gain[10] # RADIANCE_MULT_BAND
+RADIANCE_MULT_BAND_11<-metadata1$CALRAD$gain[11] # RADIANCE_MULT_BAND
 #Calculate TOA from DN:
 toa_band10 <- calc(band_10, fun=function(x){RADIANCE_MULT_BAND_10 * x + RADIANCE_ADD_BAND_10})
 toa_band11 <- calc(band_11, fun=function(x){RADIANCE_MULT_BAND_11 * x + RADIANCE_ADD_BAND_11})
 
 b10_11_k1<-metadata1$CALBT[1]
-b10_11_k1[[1]][1] # b10_k1
-b10_11_k1[[1]][2] #b11_k1
+
 b10_11_k2<-metadata1$CALBT[2]
 
 
 #Values from Metafile
-K1_CONSTANT_BAND_10 = 774.8853
-K2_CONSTANT_BAND_10 = 1321.0789
-K1_CONSTANT_BAND_11 = 480.8883
-K2_CONSTANT_BAND_11 = 1201.1442
+K1_CONSTANT_BAND_10 = b10_11_k1[[1]][1] # b10_k1
+K1_CONSTANT_BAND_11 = b10_11_k1[[1]][2] #b11_k1
+
+K2_CONSTANT_BAND_10 = b10_11_k2[[1]][1]
+K2_CONSTANT_BAND_11 = b10_11_k2[[1]][2]
 
 # calculate LST in kelvin for band 10 and 11
-#tempK10<-calc(toa_band10,fun=function(x){b10_11_k2[[1]][1]/log(b10_11_k1[[1]][1]/x+1)})
-#tempK11<-calc(toa_band11,fun=function(x){b10_11_k2[[1]][2]/log(b10_11_k1[[1]][2]/x+1)})
 
 tempK10<-calc(toa_band10,fun=function(x){K2_CONSTANT_BAND_10/log(K1_CONSTANT_BAND_10/x+1)})
 tempK11<-calc(toa_band11,fun=function(x){K2_CONSTANT_BAND_11/log(K1_CONSTANT_BAND_11/x+1)})

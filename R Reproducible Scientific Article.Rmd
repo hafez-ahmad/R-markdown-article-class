@@ -90,10 +90,26 @@ Oktibbeha County is a micropolitan county in east-central Mississippi that is ho
 
 
 
-```{r echo=FALSE,fig.cap='Land cover /Land use barplot of Oktibbeha county'}
-shp <- readOGR('data/raster_vector/Oktibbeha.shp')
-shp<- fortify(shp)
+```{r echo=FALSE,fig.cap=' Study Map of Oktibbeha county'}
+shp <- sf::st_read('data/raster_vector/Oktibbeha.shp')
+msp <- sf::st_read('data/raster_vector/Mississippi.shp')
+#shp<- fortify(shp)
+#msp<- fortify(msp)
 Oktibbeha<- ggplot() + geom_polygon(data = shp, aes(x = long, y = lat, group = group), colour = "black", fill = 'grey')
+
+
+ggm1<- ggplot() + 
+  geom_sf(data = msp, fill = "white") + 
+  geom_sf(data = shp, fill = NA, color = "red", size = 1.2) +
+  theme_void()
+ggm2<- ggplot()+
+  geom_sf(data = shp, fill = 'blue', color = "red", size = 1.2)+
+  theme(plot.background = element_rect(fill = "#BFD5E3"))
+  
+Oktibbeha<- cowplot::ggdraw() +
+  cowplot::draw_plot(ggm2) +
+  cowplot::draw_plot(ggm1, x = 0.02, y = 0.65, width = 0.35, height = 0.35)
+
 ggsave("Figures_or_Maps/Oktibbeha.png",plot=Oktibbeha,device="png",dpi=500)
 knitr::include_graphics('Figures_or_Maps/Oktibbeha.png')
 ```

@@ -118,6 +118,24 @@ Oktibbeha County and the city of Starkville are thriving communities that have g
 
 Landsat8 imageries (land 8-9 OLI /tirs c2 l1    ) from 2020 to 2022 for February and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)" . Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" . Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis.
 
+Table Landsat 8 data description
+
+| Bands                      | Wave length (micrometer) | Resolution (meter) |
+|----------------------------|--------------------------|--------------------|
+| Band 1-Coastal aerosol     | 0.43-0.45                | 30                 |
+| Band 2-Blue                | 0.45-0.51                | 30                 |
+| Band 3- Green              | 0.53-0.59                | 30                 |
+| Band 4-Red                 | 0.64-0.67                | 30                 |
+| Band 5-Near Infrared       | 0.85-0.88                | 30                 |
+| Band 6- SWIR 1             | 1.57-1.65                | 30                 |
+| Band 7- SWIR 2             | 2.11-2.29                | 30                 |
+| Band 8-Panchromatic        | 0.50-0.68                | 15                 |
+| Band 9-Cirrus              | 1.36-1.38                | 30                 |
+| Band 10-Thermal infrared 1 | 10.60-11.19              | 100                |
+| Band 11-Thermal infrared 2 | 11.50-12.51              | 100                |
+
+: Land 8-9 OLI /tirs c2 l1
+
 ## NDVI calculation
 
 For the vegetation analysis, we used Normalized Difference Vegetation Index (NDVI).NDVI is a dimensionless index that depicts the difference between the reflectance of vegetation in the visible and near-infrared spectrum.It can be used to assess changes in plant health and vegetation density [@tucker2001higher]. An NDVI is calculated as a ratio of the red (R) value and the near-infrared (NIR) value. It ranges from -1.0 to 1.0, mainly representing greens, where negative values are mainly made up of clouds, snow, and water, and values close to zero are primarily made up of rocks and bare soil. A very low NDVI value (0.1 or less) corresponds to empty areas of rocks, sand, or snow. Moderate values (between 0.2 and 0.3) represent shrubs and meadows, while large values (between 0.6 and 0.8) indicate temperate and tropical forests.
@@ -650,6 +668,15 @@ knitr::include_graphics('Figures_or_Maps/landcover.png')
 
 ```
 
+# relationship between NDVI vs LST
+```{r echo=FALSE}
+
+```
+
+# LST VS remote sensing LST
+```{r echo=FALSE}
+
+```
 
 ```{r echo=FALSE,fig.cap='Land cover /Land use barplot of Oktibbeha county'}
 knitr::include_graphics('Figures_or_Maps/landcoverbar.png')

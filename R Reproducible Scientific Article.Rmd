@@ -97,7 +97,6 @@ msp <- sf::st_read('data/raster_vector/Mississippi.shp')
 #msp<- fortify(msp)
 Oktibbeha<- ggplot() + geom_polygon(data = shp, aes(x = long, y = lat, group = group), colour = "black", fill = 'grey')
 
-
 ggm1<- ggplot() + 
   geom_sf(data = msp, fill = "white") + 
   geom_sf(data = shp, fill = NA, color = "red", size = 1.2) +
@@ -287,31 +286,62 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 
 Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs). USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata.
 
-### Radiometric calibration and Atmospheric Correction 
+### Conversion  digital numbers to Top of Atmospheric reflactance
+$L_\lambda = M_L Q_{cal} + A_L$
 
-#### Conversion DN values to spectral radiance
+where:
+
+$L_\lambda$ = TOA spectral radiance $(Watts/( m2 * srad * μm))$
+$M_L$ =Band-specific multiplicative rescaling factor from the metadata (RADIANCE_MULT_BAND_x, where x is the band number)
+AL=Band-specific additive rescaling factor from the metadata (RADIANCE_ADD_BAND_x, where x is the band number)
+$Q_{cal}$ =  Quantized and calibrated standard product pixel values (DN)  
+
+#### Conversion Top of Atmospheric reflactance to At satellite brightness temperature
+$T = \frac{K_2}{\ln \big( \frac{K_1}{{L _ \lambda} }+ 1 \big)}$
+where:
+
+T  =  Top of atmosphere brightness temperature (K)where:
+$L_\lambda$  =TOA spectral radiance $(Watts/( m2 * srad * μm))$
+$K_1$  =Band-specific thermal conversion constant from the metadata (K1_CONSTANT_BAND_x, where x is the thermal band number)
+$K_2$  =Band-specific thermal conversion constant from the metadata (K2_CONSTANT_BAND_x, where x is the thermal band number) 
 
 ```{r echo=FALSE}
 
-# read meta data 
-#metadata1<- readMeta('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')
-#lsat=stackMeta('data/raster_vector/LC08_L1TP_022037_20200612_20200823_02_T1_MTL.txt')     # stack landsat bands 
-#summary(lsat)   
-#lsat_tra <- radCor(lsat,    # landsat stack
- #                  metaData = metadata1,      # metadata (MTL file) 
-#                   method = "rad")           # convert DN to radiance
-#lsat_tra
 
 ```
 
 #### Conversion of spectral radiance to reflectance
 
 ```{r echo=FALSE}
+# temperature conversion
+band_10<-raster('LC08_L1TP_022037_20200221_20200822_02_T1_B10.TIF')
+band_11<-raster('LC08_L1TP_022037_20200221_20200822_02_T1_B11.TIF')
+RADIANCE_ADD_BAND_10 = 0.10000
+RADIANCE_ADD_BAND_11 = 0.10000
+RADIANCE_MULT_BAND_10 = 3.3420E-04
+RADIANCE_MULT_BAND_11 = 3.3420E-04
+#Calculate TOA from DN:
+toa_band10 <- calc(band_10, fun=function(x){RADIANCE_MULT_BAND_10 * x + RADIANCE_ADD_BAND_10})
+toa_band11 <- calc(band_11, fun=function(x){RADIANCE_MULT_BAND_11 * x + RADIANCE_ADD_BAND_11})
 
-#lsat_tre<- radCor(lsat,        # landsat stack
-#                  metaData = metadata1,         # metadata 
- #                 method = "apref")
-# wrting raster files
+b10_11_k1<-metadata1$CALBT[1]
+b10_11_k1[[1]][1] # b10_k1
+b10_11_k1[[1]][2] #b11_k1
+b10_11_k2<-metadata1$CALBT[2]
+
+
+#Values from Metafile
+K1_CONSTANT_BAND_10 = 774.8853
+K2_CONSTANT_BAND_10 = 1321.0789
+K1_CONSTANT_BAND_11 = 480.8883
+K2_CONSTANT_BAND_11 = 1201.1442
+
+# calculate LST in kelvin for band 10 and 11
+#tempK10<-calc(toa_band10,fun=function(x){b10_11_k2[[1]][1]/log(b10_11_k1[[1]][1]/x+1)})
+#tempK11<-calc(toa_band11,fun=function(x){b10_11_k2[[1]][2]/log(b10_11_k1[[1]][2]/x+1)})
+
+tempK10<-calc(toa_band10,fun=function(x){K2_CONSTANT_BAND_10/log(K1_CONSTANT_BAND_10/x+1)})
+tempK11<-calc(toa_band11,fun=function(x){K2_CONSTANT_BAND_11/log(K1_CONSTANT_BAND_11/x+1)})
 #raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin #2022/WFA8990/milestone #project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, #overwrite=TRUE, format="GTiff") 
 
 ```

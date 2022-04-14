@@ -16,7 +16,10 @@ Department of Wildlife, Fisheries and Aquaculture
 Three scripts
 1. Data Preprocessing.R
 This contains all preprocessing related code.
-
+ a.data extraction, and formating  
+ b.Atmospheric correction 
+ c. DN to Top of Reflectance,to land surface temperature
+ 
 2. Data analysis Classification and Mapping.R
 This contains all data analysis, land cover classification and mapping related code. 
 3. R Reproducible Scientific Article.Rmd
@@ -24,7 +27,9 @@ This is the main R markdwon script which has all writing and formatting texts.
 
 Project File (R Reproducible Scientific Article.Rproj)
 
-## We can use citation add symbol [@Mukhopadhyay2018] 
+## We can use citation add symbol 
+[@Mukhopadhyay2018] This for single citation
+[@Mukhopadhyay2018,@leidolf2002flora] Multiple citation 
 
 I am adding all references in  the 'r-references.bib' file. You can also added.
 
@@ -32,7 +37,9 @@ I am adding all references in  the 'r-references.bib' file. You can also added.
 
 git remote add origin <https://github.com/hafez-ahmad/R-markdown-article-class.git>
 
-## Pull all files from the GitHub repo (typically just readme, license, gitignore) git pull origin master/ main
+## Pull all files from the GitHub repo (typically just readme, license, gitignore)
+
+git pull origin master/ main
 
 Remember 
 ## Pull means download 
@@ -40,4 +47,5 @@ Remember
 ## Please comments for what your are doing and then push it
 
 ## Set up GitHub repo to track changes on local machine 
+
 git push -u origin master

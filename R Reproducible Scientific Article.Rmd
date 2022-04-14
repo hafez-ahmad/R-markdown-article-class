@@ -375,7 +375,8 @@ lstmap<-function(data){
     ylab("Latitude")+                             # Y-axis label
     theme_bw()}
 lstmap(as.data.frame(masked,xy=TRUE))
-
+landcover<-ggarrange(p2020_2, p2021_2, p2021_6,p2022_3,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
+ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
 ```
 
 
@@ -424,7 +425,7 @@ NDVImap(as.data.frame(masked,xy=TRUE))
 #png(file='Figures_or_Maps/ndvi_2020_06.png', width=1800, height=1800, res=300)
 #print(ndviplot)
 #dev.off()
-
+landcover<-ggarrange(p2020_2, p2021_2, p2021_6,p2022_3,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
 #ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
 
 ```

@@ -13,7 +13,20 @@ Department of Wildlife, Fisheries and Aquaculture
 
 # Instructions for R coding 
 
+Three scripts
+1. Data Preprocessing.R
+This contains all preprocessing related code.
+
+2. Data analysis Classification and Mapping.R
+This contains all data analysis, land cover classification and mapping related code. 
+3. R Reproducible Scientific Article.Rmd
+This is the main R markdwon script which has all writing and formatting texts.
+
+Project File (R Reproducible Scientific Article.Rproj)
+
 ## We can use citation add symbol [@Mukhopadhyay2018] 
+
+I am adding all references in  the 'r-references.bib' file. You can also added.
 
 ## Initiate the upstream tracking of the project on the GitHub repo 
 

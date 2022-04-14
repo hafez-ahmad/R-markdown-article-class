@@ -360,6 +360,22 @@ tempK10<-calc(toa_band10,fun=function(x){K2_CONSTANT_BAND_10/log(K1_CONSTANT_BAN
 tempK11<-calc(toa_band11,fun=function(x){K2_CONSTANT_BAND_11/log(K1_CONSTANT_BAND_11/x+1)})
 #raster::writeRaster(masked,filename="W:/Home/hahmad/public/Course/Sprin #2022/WFA8990/milestone #project/data/LC08_L1TP_022037_20200612_20200823_02_T1.tif",bylayer=F, #overwrite=TRUE, format="GTiff") 
 
+lstmap<-function(data){
+  ggplot(data =data ) +
+    geom_tile(aes(x = x, y = y, fill = layer))+
+    scale_fill_gradientn(colors=rev(brewer.pal(11,'Spectral')),
+                        name='LST',
+                        na.value = 'transparent',
+                        labels=(c("-6", "-4" ,"-2" ,"0" , "2" , "4",  "6" , "8" , "10" ,"12", "14")),
+                        breaks=seq(-6,14,2),
+                        limits=c(-6,14),
+                        guide = 'colorbar')+
+    coord_equal()+
+    xlab("Longitude")+                            # X-axis label
+    ylab("Latitude")+                             # Y-axis label
+    theme_bw()}
+lstmap(as.data.frame(masked,xy=TRUE))
+
 ```
 
 
@@ -385,22 +401,29 @@ ndvi2<-ndvi('data/raster_vector/LC08_L1TP_022037_20210223_20210303_02_T1.tif')
 ndvi3<-ndvi('data/raster_vector/LC08_L1TP_022037_20210615_20210622_02_T1.tif')
 ndvi4<-ndvi('data/raster_vector/LC08_L1TP_022037_20220314_20220322_02_T1.tif')
 
-allndvi<- raster::brick(ndvi1,ndvi2,ndvi3,ndvi4)
-names(allndvi)<-c("Feb,2020","Feb,2021","Jun 2021","Mar,2022")
 
 ## Set up color gradient with 100 values between 0.0 and 1.0
 breaks <- seq(-1, 1, by = 0.1)
-cols <- colorRampPalette(c("red", "yellow", "green"))(length(breaks) - 1)
 
-## Use `at` and `col.regions` arguments to set the color scheme
-ndviplot<-levelplot(allndvi, at = breaks, col.regions = cols,layout=c(2, 2),
-          ylab=list('Latitude',fontface='bold'),
-          xlab=list('Longitude',fontface='bold'),margin=list(draw=FALSE,scales=list(draw=FALSE)))
-
+NDVImap<-function(data){
+  ggplot(data =data ) +
+    geom_tile(aes(x = x, y = y, fill = layer))+
+    scale_fill_gradientn(colors=rev(brewer.pal(11,'BuGn')),
+    name='NDVI',
+    na.value = 'transparent',
+    labels=(c("-1","-0.8","-0.6 ","-0.4 ","-0.2 ","0 ","0.2 ","0.4 "  ,"0.6 ","0.8 ","1 ")),
+      breaks=seq(-1, 1, by = 0.2),
+        limits=c(-1,1),
+        guide = 'colorbar')+
+    coord_equal()+
+    xlab("Longitude")+                            # X-axis label
+    ylab("Latitude")+                             # Y-axis label
+    theme_bw()}
+NDVImap(as.data.frame(masked,xy=TRUE))
           
-png(file='Figures_or_Maps/ndvi_2020_06.png', width=1800, height=1800, res=300)
-print(ndviplot)
-dev.off()
+#png(file='Figures_or_Maps/ndvi_2020_06.png', width=1800, height=1800, res=300)
+#print(ndviplot)
+#dev.off()
 
 #ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
 

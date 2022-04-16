@@ -6,10 +6,28 @@ library(rgdal)       # spatial data processing
 library(RStoolbox)   # Image analysis
 library(ggplot2)     # plotting
 library(gridExtra)   # plot arrangement
+library(stringr)
+# loading raster and meta data 
+
+data<- read.csv("W:/Home/hahmad/public/Download/aquatic_barrier_ranks_2022-03-25 _dam_all/aquatic_barrier_ranks_2022-02-26.csv")
+coord<- SpatialPoints(cbind(data$lon,data$lat),proj4string = CRS("+proj=longlat"))
+writeOGR(coord,'.','all_damsarpdata',driver = "ESRI Shapefile")
+plot(coord)
+df<- SpatialPointsDataFrame(coords = coord,data=data)
+writeOGR(df,'.','all_damsarpdata',driver = "ESRI Shapefile")
+
+str(data)
+# landsat 8-9 OLI/TIRS C2 L1
+meta<- list.files('data',pattern = '.txt')
+meta
+
+metafiles<- c()
+for (i in 1:4){
+  mfilesnames<-paste0('meta_',substr(meta[i],18,25))
+  metafiles<- c(metafiles, mfilesnames)
+}
 
 
-#loading raster and meta data
-#Landsat 8-9 OLI/TIRS C2 L1
 # set up working directory
 setwd("D:\\home_tower\\Home\\hahmad\\R")
 # select all .tar file
@@ -19,87 +37,97 @@ for (i in 1:9){
   untar(files[i],exdir=substr(files[i],1,40))
   print(paste0('finished untaring /unzipping',files[i]))
   i=i+1}
+
+
+
+
+
+study<-raster::shapefile('W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/Oktibbeha.shp')
 # check the directory
 folders<-list.dirs()
-# empty vector
+folders
+folders<- folders[ !folders %in% folders[1]]
+folders<-gsub('./',"",folders)
+folders<-paste0("D:/home_tower/Home/hahmad/R/",folders)
+folders
+
 metafiles<-c()
-# find '..MLT..' containing files names in folders
+# find 'MLT' containing files in each  folders  and read the files each files as readMeta
 for (i in 1:length(folders)){
   files<-list.files(folders[i],pattern = '(MTL)+(.txt)',full.names = TRUE)
-  # append files to metafiles
   metafiles<-append(metafiles,files)
-  
- 
-  }
-## study area shapefile
-study<-raster::shapefile('W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/Oktibbeha.shp')
-# read meta data
+}
+# set up working directory
+# empty vector of ndvi
+ndvilist<-c()
+setwd("D:\\home_tower\\Home\\hahmad\\R")
+years<-list.dirs()
+years<- years[ !years %in% years[1]]
+years<-substr(years,20,27)
 
-folders<-gsub('./',"",folders)
-
-folders<-paste0("D:/home_tower/Home/hahmad/R/",folders)
-
-# read meta data from metafiles
-for (i in 1:length(metafiles)){
+for (i in 1:length(folders)){
   # go to first folder and find all .TIF files
   setwd(folders[i])
-  files<-list.files(pattern = '.TIF')
-  metfile<-list.files(pattern = '(MTL)+(.txt)',full.names = TRUE)
+  files4<-raster(list.files(pattern = 'B4.TIF',full.names = TRUE))
+  files5<-raster(list.files(pattern = 'B5.TIF',full.names = TRUE))
+  study<- spTransform(study, proj4string(files4)) 
+  # cropped
+  cropped4<- crop(files4,extent(study))
+  # masked
+  masked4<- mask(cropped4,study)
+  # cropped
+  cropped5<- crop(files5,extent(study))
+  # masked
+  masked5<- mask(cropped5,study)
+  # divide b4 with b5
+  ndvi <- overlay(x = masked4, y = masked5, fun = function(x,y) (y-x)/(y+x))
+  writeRaster(ndvi,paste0('D:\\home_tower\\Home\\hahmad\\Data\\','ndvi',substr(names(files4),18,25)), overwrite=TRUE,format="GTiff")
+  # calculate NDVI mean
+  ndvi_mean<- cellStats(ndvi,stat="mean")
+  # append to ndvilist and with respective names of rasterfiles
+  ndvilist<- c(ndvilist,ndvi_mean)
+}
+# ndvi as dataframe
+ndvidf<- as.data.frame(ndvilist)
+ndvidf$date<-years
+
+write.csv(ndvidf,'D:\\home_tower\\Home\\hahmad\\Data\\ndvi.csv',row.names = FALSE)
+
+setwd("D:\\home_tower\\Home\\hahmad\\R")
+lstlist<- c()
+# temperature
+for (i in 1:length(folders)){
+  # go to first folder and find all .TIF files
+  setwd(folders[i])
+  metafiles<-list.files(pattern = '(MTL)+(.txt)',full.names = TRUE)
   # read meta data
-  meta<-readMeta(metfile)
-  print('finished reading meta data')
-  # read each files
-  for (j in 1:length(files)){
-    # read each files
-    rasterfile<-raster(files[j])
-    # if names(files) contains "B10.TIF" or "B11.TIF" then do the following
-    if(str_detect(names(rasterfile),"B10") | str_detect(files[j],"B11")){
-      # B10 conversio  DN to Top of atmopsheric reflectance
-      newB10<- calc(rasterfile,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
-      # thermal conversion
-      newTOPk<- calc( newB10,fun = function(x){meta$CALBT[2][[1]][2]/log(meta$CALBT[1][[1]][2]/x+1)})
-      # kelvin to celcius
-      newCelcius<- calc(newTOPk,fun = function(x){x-273.15})
-      print('finished B10 conversion')
-      # projection change as study area
-      study<- spTransform(study, proj4string(newCelcius)) 
-      # cropped
-      cropped<- crop(newCelcius,extent(study))
-      # masked
-      masked<- mask(cropped,study)
-      # write masked raster
-      writeRaster(masked,paste0(files[j],'.tif'),bylayer=F, overwrite=TRUE)
-      print(paste0('Writing B10 ',files[j]))
-      # conversion DN to top of atmopsheric reflectance
-      newTOP11<- calc(rasterfile,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
-      # Top of atmopsheric reflectance to  kelvin conversion
-      newTOPk<- calc(newTOP11,fun = function(x){meta$CALBT[2][[1]][2]/log(meta$CALBT[1][[1]][2]/x+1)})
-      # kelvin to celcius
-      newCelcius<- calc(newTOPk,fun = function(x){x-273.15})
-      print('finished B11 conversion')
-      study<- spTransform(study, proj4string( newCelcius)) 
-      # cropped
-      cropped<- crop( newCelcius,extent(study))
-      # masked
-      masked<- mask(cropped,study)
-      # write masked 
-      writeRaster(masked,paste0(files[j],".tif"),bylayer=F, overwrite=TRUE)
-      print(paste0('Writing B11 ',files[j]))
-    } else{
-      # TOP conversion each raster
-      newTOP<- calc(rasterfile,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
-      print('finished TOP conversion')
-      study<- spTransform(study, proj4string(newTOP)) 
-      # cropped
-      cropped<- crop(newTOP,extent(study))
-      # masked
-      masked<- mask(cropped,study)
-      # write newTOP 
-      writeRaster(masked,paste0(files[j],".tif"),bylayer=F, overwrite=TRUE)
-      print(paste0('Writing TOP ',files[j]))
-    }
-  }
+  meta<-readMeta(metafiles)
+  b10_11_k1<- meta$CALBT[1]
+  b10_11_k2<- meta$CALBT[2]
+  K1_CONSTANT_BAND_10 = b10_11_k1[[1]][1] # b10_k1
+  K2_CONSTANT_BAND_10 = b10_11_k2[[1]][1]
+  files10<-raster(list.files(pattern = 'B10.TIF',full.names = TRUE))
+  study<- spTransform(study, proj4string(files10)) 
+  # cropped
+  cropped10<- crop(files10,extent(study))
+  # masked
+  masked10<- mask(cropped10,study)
+  # B10 conversio  DN to Top of atmopsheric reflectance
+  newB10<- calc(masked10,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
+  # thermal conversion
+  #newTOPk<- calc( newB10,fun = function(x){meta$CALBT[2][[1]][2]/log(meta$CALBT[1][[1]][2]/x+1)})
+  newTOPk<-calc(newB10,fun=function(x){K2_CONSTANT_BAND_10/log(K1_CONSTANT_BAND_10/x+1)})
+  # kelvin to celcius
+  newCelcius<- calc(newTOPk,fun = function(x){x-273.15})
+  writeRaster(newCelcius,paste0('D:\\home_tower\\Home\\hahmad\\Data\\','Celcius',substr(names(files10),18,25)), overwrite=TRUE,format="GTiff")
+  # calculate NDVI mean
+  lst_mean<- cellStats(newCelcius,stat="mean")
+  # append to ndvilist and with respective names of rasterfiles
+  lstlist<- c(lstlist,lst_mean)
 }
 
-
-
+# ndvi as dataframe
+lstdf<- as.data.frame(lstlist)
+lstdf$date<-years
+# write to csv
+write.csv(lstdf,'D:\\home_tower\\Home\\hahmad\\Data\\lstdf.csv',row.names = FALSE)

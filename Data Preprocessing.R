@@ -34,6 +34,11 @@ for (i in 1:length(folders)){
 ## study area shapefile
 study<-raster::shapefile('W:/Home/hahmad/public/Course/Sprin 2022/WFA8990/milestone project/data/Oktibbeha.shp')
 # read meta data
+
+folders<-gsub('./',"",folders)
+
+folders<-paste0("D:/home_tower/Home/hahmad/R/",folders)
+
 # read meta data from metafiles
 for (i in 1:length(metafiles)){
   # go to first folder and find all .TIF files
@@ -42,38 +47,56 @@ for (i in 1:length(metafiles)){
   metfile<-list.files(pattern = '(MTL)+(.txt)',full.names = TRUE)
   # read meta data
   meta<-readMeta(metfile)
-  print(files)
+  print('finished reading meta data')
   # read each files
   for (j in 1:length(files)){
     # read each files
     rasterfile<-raster(files[j])
-    # TOP conversion each raster
-    newTOP<- calc(rasterfile,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
-    # cropped
-    cropped<- crop(newTOP,extent(study))
-    # masked
-    masked<- mask(cropped,study)
-    # write newTOP 
-    writeRaster(masked,files[j],bylayer=F, overwrite=TRUE, format="GTiff")
-    if (j==10){ #k2/k1
-      newTOPk<- calc(newTOP,fun = function(x){meta$CALBT[2][[1]][1]/log(meta$CALBT[1][[1]][1]/x+1)})
+    # if names(files) contains "B10.TIF" or "B11.TIF" then do the following
+    if(str_detect(names(rasterfile),"B10") | str_detect(files[j],"B11")){
+      # B10 conversio  DN to Top of atmopsheric reflectance
+      newB10<- calc(rasterfile,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
+      # thermal conversion
+      newTOPk<- calc( newB10,fun = function(x){meta$CALBT[2][[1]][2]/log(meta$CALBT[1][[1]][2]/x+1)})
       # kelvin to celcius
       newCelcius<- calc(newTOPk,fun = function(x){x-273.15})
+      print('finished B10 conversion')
+      # projection change as study area
+      study<- spTransform(study, proj4string(newCelcius)) 
       # cropped
-      croppednewCelcius<- crop(newCelcius,extent(study))
+      cropped<- crop(newCelcius,extent(study))
       # masked
-      maskedCelcius<- mask(croppednewCelcius,study)
-      writeRaster(maskedCelcius,file = paste0(files[j],"C"),bylayer=F, overwrite=TRUE, format="GTiff")
-    }
-    if (j==11){ #k2/k1
-      newTOPk<- calc(newTOP,fun = function(x){meta$CALBT[2][[1]][2]/log(meta$CALBT[1][[1]][2]/x+1)})
+      masked<- mask(cropped,study)
+      # write masked raster
+      writeRaster(masked,paste0(files[j],'.tif'),bylayer=F, overwrite=TRUE)
+      print(paste0('Writing B10 ',files[j]))
+      # conversion DN to top of atmopsheric reflectance
+      newTOP11<- calc(rasterfile,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
+      # Top of atmopsheric reflectance to  kelvin conversion
+      newTOPk<- calc(newTOP11,fun = function(x){meta$CALBT[2][[1]][2]/log(meta$CALBT[1][[1]][2]/x+1)})
       # kelvin to celcius
       newCelcius<- calc(newTOPk,fun = function(x){x-273.15})
+      print('finished B11 conversion')
+      study<- spTransform(study, proj4string( newCelcius)) 
       # cropped
-      croppednewCelcius<- crop(newCelcius,extent(study))
+      cropped<- crop( newCelcius,extent(study))
       # masked
-      maskedCelcius<- mask(croppednewCelcius,study)
-      writeRaster(maskedCelcius,file = paste0(files[j],"C"),bylayer=F, overwrite=TRUE, format="GTiff")
+      masked<- mask(cropped,study)
+      # write masked 
+      writeRaster(masked,paste0(files[j],".tif"),bylayer=F, overwrite=TRUE)
+      print(paste0('Writing B11 ',files[j]))
+    } else{
+      # TOP conversion each raster
+      newTOP<- calc(rasterfile,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
+      print('finished TOP conversion')
+      study<- spTransform(study, proj4string(newTOP)) 
+      # cropped
+      cropped<- crop(newTOP,extent(study))
+      # masked
+      masked<- mask(cropped,study)
+      # write newTOP 
+      writeRaster(masked,paste0(files[j],".tif"),bylayer=F, overwrite=TRUE)
+      print(paste0('Writing TOP ',files[j]))
     }
   }
 }

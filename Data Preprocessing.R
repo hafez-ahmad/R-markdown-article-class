@@ -131,3 +131,31 @@ lstdf<- as.data.frame(lstlist)
 lstdf$date<-years
 # write to csv
 write.csv(lstdf,'D:\\home_tower\\Home\\hahmad\\Data\\lstdf.csv',row.names = FALSE)
+
+
+# TOP conversion
+setwd("D:\\home_tower\\Home\\hahmad\\R")
+# temperature
+for (i in 1:length(folders)){
+  # go to first folder and find all .TIF files
+  setwd(folders[i])
+  # find 'MLT' and '.txt' containing files in each  folders  and read the files each files as readMeta
+  metafiles<-list.files(pattern = '(MTL)+(.txt)',full.names = TRUE)
+  # read meta data
+  meta<-readMeta(metafiles)
+  files4<-raster(list.files(pattern = 'B4.TIF',full.names = TRUE))
+  files3<-raster(list.files(pattern = 'B3.TIF',full.names = TRUE))
+  files2<-raster(list.files(pattern = 'B2.TIF',full.names = TRUE))
+  # raster stacked 
+  rasterstacked<- raster::stack(files4,files3,files2)
+  # reproject to study
+  study<- spTransform(study, proj4string(files10)) 
+  # cropped
+  cropped10<- crop(rasterstacked,extent(study))
+  # masked
+  masked10<- mask(cropped10,study)
+  # B10 conversio  DN to Top of atmopsheric reflectance
+  newB10<- calc(masked10,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
+  writeRaster(newB10,paste0('D:\\home_tower\\Home\\hahmad\\GISdata\\','TOP',substr(names(files10),18,25)), overwrite=TRUE,format="GTiff")
+ 
+}

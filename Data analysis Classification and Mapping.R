@@ -256,3 +256,32 @@ NDVImap(as.data.frame(masked,xy=TRUE))
 landcover<-ggarrange(p2020_2, p2021_2, p2021_6,p2022_3,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
 ggsave("Figures_or_Maps/ndvi_2020_06.png",plot=ndviplot,device="png",dpi=500)
 
+# LST Map 
+setwd("D:\\home_tower\\Home\\hahmad\\Data")
+lstrasters<- list.files(pattern = "(Celcius)")
+
+lstplotlist<-c()
+for (i in 1:length(lstrasters)){
+  lstdata<-raster::projectRaster(raster(lstrasters[i]),crs="+proj=longlat +datum=WGS84 +no_defs")
+  data<- as.data.frame(lstdata,xy=TRUE)
+  names(data)<- c('x','y','layer')
+  plotting<-ggplot(data=data)+
+    geom_tile(aes(x=x,y=y,fill=layer))+
+    scale_fill_gradientn(colors=rev(brewer.pal(11,'Spectral')),
+                         name='LST',
+                         na.value = 'transparent',
+                         labels=(c("4",  "8",  "12", "16 ", "20", "24", "28", "32")),
+                         breaks=seq(4,32,4),
+                         limits=c(-1,32),
+                         guide = 'colorbar')+
+    coord_equal()+
+    labs(xlab=NULL,                           
+         ylab=NULL)+
+    theme_void()
+  lstplotlist[[i]]<-plotting
+}
+
+#title = paste0('LST:',substr(lstrasters[i],8,16))
+lstmapped<- ggpubr::ggarrange(plotlist = lstplotlist,nrow = 3,ncol = 3,labels = c("a","b","c","d","e","f","g","h","i"),common.legend = TRUE)
+#gpubr::ggexport("lstmap.png",plot=lstmapped)
+ggsave("lstmap.png",plot=lstmapped,device="png",dpi=500)

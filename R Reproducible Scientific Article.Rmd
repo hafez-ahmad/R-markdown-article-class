@@ -29,11 +29,11 @@ authornote: |
 
   
 abstract: |
-  The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$.
+  The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2018 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi. Then Additional Vegetation data and land surface tempertaure  data from Global MODIS/Terra was retrieved via Google Earth Engine .Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$.
 
   
-keywords          : "Rmarkdown,GIS,Remote sensing,NDVI, Land use"
-wordcount         : "1632"
+keywords          : "Rmarkdown, R, Remote sensing, NDVI, Land use and LST"
+wordcount         : "2131"
 
 bibliography      : ["r-references.bib"]
 
@@ -72,23 +72,20 @@ r_refs("r-references.bib") # add all references
 
 # Introduction
 
-<p align="justify"> Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built up areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. 
+Monitoring vegetation over time is an essential component of geographical resource management applications. On-site monitoring is frequently carried out by taking detailed measurements, such as canopy level measurements. In situ measurements are time-consuming, labor-intensive, and difficult to carry out over large geographic areas. Remote sensing, on the other hand, is a very viable option for monitoring numerous vegetation characteristics using various vegetation indices such as Normalized Difference Vegetation Index, Near-Infrared / Red Ratio, Soil and atmospherically resistant vegetation index [@im2008hyperspectral]. The natural and anthropogenic features found on the Earth's surface are referred to as land cover. Examples include deciduous forests, wetlands, developed/built up areas, grasslands, and water. Land use, on the other hand, describes the activities that take place on the land and indicates the current use of the land. Examples include residential homes, shopping centers, tree nurseries, state parks, and reservoirs. Land cover and land use are frequently studied together in remote sensing studies because satellite imagery and aerial photography can identify land cover, but inferring land use often requires more knowledge of the study region, so a compromise is sometimes made between identifying the variable of interest and inferring land use [@fonji2014using]. 
 
-Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory ;@berlanga2002land].</p>
+Local and place-specific global climate change (LULCC) is a type of global climate change, and these changes add up to global climate change. These changes, in turn, have an impact on other components of our earth-atmosphere system, frequently leading to negative outcomes such as biodiversity loss, desertification, and climate change. Several methods exist for tracking or detecting changes in land cover over time. Previously, researchers mapped LULCC over smaller areas using field data and aerial photographs. Because satellite images can cover large geographic areas and have a long temporal coverage, remote sensing is an excellent tool for studying LULCC [@jensen1986introductory ;@berlanga2002land].
 
 Land cover changes can occur as a result of both human and climate drivers. For example, the demand for new settlements often results in the permanent loss of natural land, resulting in changes in the weather patterns, temperature, and precipitation [@hale2006land;@pielke2007overview]. Disturbance events such as wildfire and timber harvest are important factors influencing land cover. From 1985 to 2010, forest disturbances affected an average of approximately 11200 square miles per year in the contiguous United States, according to the North American forest dynamic dataset. The rate of forest disturbance decreased by about one-third between 2006 and 2010[@reidmiller2019fourth].
 
 
-In this mini paper, the **objectives** are (a) to present results of an analysis of the land surface temperature and precipitation data, (b) to quantify normalized vegetation index for three years and estimate the land use /land cover, (c) to determine the relationship  between vegetation and land use.
+In this mini paper, the **objectives** are (a) to present results of an analysis of the Historical land surface temperature and precipitation data, (b) to quantify normalized vegetation index and Land surface temperature for five years and estimate the land use /land cover, (c) to determine the relationship  between vegetation and land use.
 
 # Methods and Materials
 
 ## Study area
 
 Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. Its area is approximately 118 square kilometers, and it borders six other counties: Lowndes, Winstons, Noxubee, Webster, Choctaw, and Claw. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
-
-
-
 
 ```{r echo=FALSE,fig.cap=' Study Map of Oktibbeha county'}
 knitr::include_graphics('Figures_or_Maps/Oktibbeha.png')
@@ -97,7 +94,7 @@ Oktibbeha County and the city of Starkville are thriving communities that have g
 
 ## Data collection
 
-Landsat8 imageries (land 8-9 OLI /tirs c2 l1    ) from 2020 to 2022 for February and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)" . Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" . Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis.
+Landsat8 imageries (land 8-9 OLI /tirs c2 l1) from 2018 to 2022 for February/March and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)" . Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" .Historical NDVI data was also downloaded from MODIS/Terra Vegetation database 'MOD13A1.006 Terra Vegetation Indices 16-Day Global 500m' via Google earth engine. Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis. Apartment these, Temporal Land Surface Temperature and NDVI were extracted from 30 meter Landsat 8 imageries.
 
 Table Landsat 8 data description
 
@@ -115,7 +112,7 @@ Table Landsat 8 data description
 | Band 10-Thermal infrared 1 | 10.60-11.19              | 100                |
 | Band 11-Thermal infrared 2 | 11.50-12.51              | 100                |
 
-: Land 8-9 OLI /tirs c2 l1, Row/Path: 22/ 37
+: Row/Path: 22/ 37
 
 ## NDVI calculation
 
@@ -124,9 +121,6 @@ For the vegetation analysis, we used Normalized Difference Vegetation Index (NDV
 for the Landsat 8, the formula is given 
 $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}$
 
- Band 5-- reflection in the near-infrared spectrum 
- 
- Band 4 -- reflection in the red range of the spectrum 
  
 ## Correlation analysis 
 
@@ -150,40 +144,35 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 ## Landsate satellite imageries preprocessing
 
 
+Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs). USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata. The conversion of DNs to Top of Atmospheric reflactance was done via following equations.
 
-Landsat sensors capture reflected energy and store data as 8-bit digital numbers (DNs). USGS data includes metadata. The first step is to convert DN to radiance and then radiance to top of reflectance by using provided metadata.
-
-### Conversion  digital numbers to Top of Atmospheric reflactance
 $L_\lambda = M_L Q_{cal} + A_L$
 
-where:
-
-$L_\lambda$ = TOA spectral radiance $(Watts/( m2 * srad * μm))$
+where
+$L_\lambda$ = TOA spectral radiance $(Watts/( m^2 * srad * μm))$
 $M_L$ =Band-specific multiplicative rescaling factor from the metadata (RADIANCE_MULT_BAND_x, where x is the band number)
 AL=Band-specific additive rescaling factor from the metadata (RADIANCE_ADD_BAND_x, where x is the band number)
 $Q_{cal}$ =  Quantized and calibrated standard product pixel values (DN)  
 
-#### Conversion Top of Atmospheric reflactance to At satellite brightness temperature
+For the purpose for calculating Land surface temperature . The Conversion Top of Atmospheric reflactance to At satellite brightness temperature was done via the following equation.
+
 $T = \frac{K_2}{\ln \big( \frac{K_1}{{L _ \lambda} }+ 1 \big)}$
-where:
+where
 
 T  =  Top of atmosphere brightness temperature (K)where:
-$L_\lambda$  =TOA spectral radiance $(Watts/( m2 * srad * μm))$
+$L_\lambda$  =TOA spectral radiance $(Watts/( m^2 * srad * μm))$
 $K_1$  =Band-specific thermal conversion constant from the metadata (K1_CONSTANT_BAND_x, where x is the thermal band number)
 $K_2$  =Band-specific thermal conversion constant from the metadata (K2_CONSTANT_BAND_x, where x is the thermal band number) 
 
-```{r echo=FALSE}
+All associate values were taken from meta data of each scene.
 
-
-```
 
 
 # Results and discussions
 
 
 
-## Land surface temperature and precipitation
-
+## Historical Land surface temperature and precipitation
 
 ```{r echo=FALSE}
 # date change character to date time from lubridate library
@@ -205,7 +194,7 @@ lst_description[,-1] <- printnum(lst_description[,-1])
 
 ```
 
-## precipiation works
+
 
 ```{r echo=FALSE}
 # same descriptive table
@@ -230,7 +219,6 @@ tmp_sd<-mean(round(as.numeric(lst_description$SD),0))
 Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$ (see table 1).
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results=FALSE}
-
 lst_month<- ggplot(na.omit(lst)) +
   aes(x = Month, y = LST_Day_1km, fill = Month) +
   geom_boxplot(shape = "circle") +
@@ -249,6 +237,7 @@ lst_month<- ggplot(na.omit(lst)) +
 ggsave("Figures_or_Maps/lst_month.png",plot=lst_month,device="png",dpi=500)
 
 ```
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results=FALSE}
 
 pre_month<- ggplot(na.omit(Prci)) +
@@ -320,15 +309,16 @@ knitr::include_graphics('Figures_or_Maps/ndvilst.png')
 
 R squared value of 0.88 indicates that there is a good relationship between remotely observed NDVI and Land Surface temperature (see the Figure 6).
 
-# LST VS remote sensing LST
-```{r echo=FALSE}
-
+# relationship between NDVI vs LST
+```{r echo=FALSE,fig.cap=' Map of the  Land Surface Temperature for the Oktibbeha county. Here  a starts with March of 2018, then b is the June of 2018 and likelywise i labels is the March of 2022'}
+knitr::include_graphics('Figures_or_Maps/lstmap.png')
 ```
+Land surface map (see figure 7)
 
 ```{r echo=FALSE,fig.cap='Land cover /Land use barplot of Oktibbeha county'}
 knitr::include_graphics('Figures_or_Maps/landcoverbar.png')
 ```
-According to the figure, the most variable land cover classes are bare soil, roads/highways, and vegetation. 
+According to the figure 8, the most variable land cover classes are bare soil, roads/highways, and vegetation. 
 
 As a result of the subtropical latitude of Oktibbeha county and the extensive lands to the north, the county's climate is warm and humid. It is also influenced by warm temperatures from the Gulf of Mexico [@brent1973soil]. The average annual precipitation is 141.86 cm, with monthly precipitation ranging from 8.23 cm in October to 15.24 cm in March. The wettest seasons are winter and spring, with fall being the driest. Snow is uncommon and only lasts for a short time on the ground. The average temperature in this county ranges from 5.2 degrees Celsius in January to a high of 27 degrees Celsius in July. The average number of frost-free days (above O degrees C) in a year is 226[@leidolf2002flora]. 
 

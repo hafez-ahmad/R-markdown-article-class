@@ -284,4 +284,4 @@ for (i in 1:length(lstrasters)){
 #title = paste0('LST:',substr(lstrasters[i],8,16))
 lstmapped<- ggpubr::ggarrange(plotlist = lstplotlist,nrow = 3,ncol = 3,labels = c("a","b","c","d","e","f","g","h","i"),common.legend = TRUE)
 #gpubr::ggexport("lstmap.png",plot=lstmapped)
-ggsave("lstmap.png",plot=lstmapped,device="png",dpi=500)
+ggsave("lstmap.png",plot=lstmapped,device="png",dpi=500,width = 3,height = 2, units = "in")

@@ -10,6 +10,7 @@ library(lubridate)  # date time
 library(ggpubr) # arranging plots
 library(ggspatial) # annotation 
 library(reshape2)
+library(ggstatsplot)
 
 shp <- sf::st_read('data/raster_vector/Oktibbeha.shp')
 msp <- sf::st_read('data/raster_vector/Mississippi.shp')
@@ -30,6 +31,24 @@ Oktibbeha<- cowplot::ggdraw() +
   cowplot::draw_plot(ggm1, x = 0.02, y = 0.65, width = 0.35, height = 0.35)
 
 ggsave("Figures_or_Maps/Oktibbeha.png",plot=Oktibbeha,device="png",dpi=500)
+
+# land surface and ndvi plot
+
+library(ggpubr)
+ndvi_lst<- cbind(lstdf,ndvidf)
+ndvi_lst$date<- NULL
+ndvilst<- ggscatter(
+  ndvi_lst,
+  x='ndvilist',y='lstlist',add='reg.line',
+  xlab='Normalized Difference Vegetation Index',
+  ylab='Land Surface  Temperature (C)',
+  add.params = list(color = "red", fill = "lightgray"), # Customize regression line
+  conf.int = TRUE # Add confidence interval
+)+stat_cor(
+  aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
+  label.y = 25
+)
+ggsave("ndvilst.png",plot=ndvilst,device="png",dpi=500)
 
 # land use / land cover classification function 
 # it requires training sample, and then train model and predict classes

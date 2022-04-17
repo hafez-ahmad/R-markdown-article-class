@@ -115,7 +115,7 @@ Table Landsat 8 data description
 | Band 10-Thermal infrared 1 | 10.60-11.19              | 100                |
 | Band 11-Thermal infrared 2 | 11.50-12.51              | 100                |
 
-: Land 8-9 OLI /tirs c2 l1
+: Land 8-9 OLI /tirs c2 l1, Row/Path: 22/ 37
 
 ## NDVI calculation
 
@@ -148,7 +148,6 @@ Prci<-read_csv("data/Precipitation1998_19.csv")
 ```
 
 ## Landsate satellite imageries preprocessing
-
 
 
 
@@ -309,15 +308,17 @@ knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
 
 Looking at the image, it is understood that every year due to the development of the city, the vegetation is changing in one place or another. The change between red and green is clearly seen in the image.
 
-```{r echo=FALSE,fig.cap='Land cover /Land use map of Oktibbeha county  '}
+```{r echo=FALSE,fig.cap='Land cover /Land use map of the Oktibbeha county  '}
 knitr::include_graphics('Figures_or_Maps/landcover.png')
 
 ```
 
 # relationship between NDVI vs LST
-```{r echo=FALSE}
-
+```{r echo=FALSE,fig.cap=' Land Surface Temperature and NDVI relationship'}
+knitr::include_graphics('Figures_or_Maps/ndvilst.png')
 ```
+
+R squared value of 0.88 indicates that there is a good relationship between remotely observed NDVI and Land Surface temperature (see the Figure 6).
 
 # LST VS remote sensing LST
 ```{r echo=FALSE}

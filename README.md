@@ -16,8 +16,11 @@ Department of Wildlife, Fisheries and Aquaculture
 Three scripts
 1. Data Preprocessing.R
 This contains all preprocessing related code.
- a.data extraction, and formating  
+
+ a.data extraction, and formatting 
+ 
  b.Atmospheric correction 
+ 
  c. DN to Top of Reflectance,to land surface temperature
  
 2. Data analysis Classification and Mapping.R

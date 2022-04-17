@@ -1,9 +1,9 @@
 ---
-title             : "Geospatial analysis of Oktibbeha County of Mississippi, USA"
+title             : "Vegetation,and Land cover analysis in response to precipitation and land surface tempertaure of Oktibbeha County of Mississippi, USA"
 
 author: 
   - name          : "Hafez Ahmad"
-    affiliation   : "1"
+    affiliation   : "1,2"
     corresponding : yes    # Define only one corresponding author
     address       : "College of Forest Resources,Mississippi State, MS 39762"
     email         : "ha626@msstate.edu"
@@ -12,7 +12,7 @@ author:
       - Writing - Original Draft Preparation
       - Writing - Review & Editing
   - name          : "Your Name"
-    affiliation   : "1,2"
+    affiliation   : "1"
     email         :
     address       :
     role:
@@ -22,7 +22,7 @@ affiliation:
   - id            : "1"
     institution   : "Mississippi State University"
   - id            : "2"
-    institution   : "Mississippi State University"
+    institution   : "University of Chittagong"
 
 authornote: |
   This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
@@ -138,7 +138,7 @@ $r_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=
 # reading data
 lst<- read_csv("data/landsurface temperature2010_22.csv")
 Prci<-read_csv("data/Precipitation1998_19.csv")
-
+ndvi<- read_csv('data/NDVI2000_2022.csv') %>%  rename('date'='system:time_start')
 ```
 
 ## Landsate satellite imageries preprocessing
@@ -171,16 +171,19 @@ All associate values were taken from meta data of each scene.
 # Results and discussions
 
 
-
 ## Historical Land surface temperature and precipitation
 
 ```{r echo=FALSE}
 # date change character to date time from lubridate library
 lst$date<- mdy(lst$date)
+# precipitation 
 Prci$date<- mdy(Prci$date)
+# ndvi from modis/terra
+ndvi$date<-dmy(ndvi$date)
 # adding column as month 
 lst$Month<- month(lst$date,label = TRUE)
 Prci$Month<- month(Prci$date,label = TRUE)
+ndvi$Month<- month(ndvi$date,label=TRUE)
 # making table as descriptive statistics
 lst_description<- lst %>% 
   group_by(Month) %>% 
@@ -257,6 +260,32 @@ pre_month<- ggplot(na.omit(Prci)) +
 #ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, #width = 3,height = 2, units = "in")
 ggsave("Figures_or_Maps/pre_month.png",plot=pre_month,device="png",dpi=500)
 
+
+#ndvi
+ndvi_description<- ndvi %>% 
+  group_by(Month) %>% 
+  summarize(Mean=round(mean(NDVI,na.rm=TRUE),2),
+            Median=round(median(NDVI,na.rm=TRUE),2),
+            Max=round(max(NDVI,na.rm=TRUE),2),
+            Min=round(min(NDVI,na.rm=TRUE),2),
+            SD=round(sd(NDVI,na.rm=TRUE),2))
+ndvi_description[,-1] <- printnum(ndvi_description[,-1])
+
+pre_month<- ggplot(na.omit(ndvi)) +
+  aes(x = Month, y = NDVI, fill = Month) +
+  geom_boxplot(shape = "circle") +
+  scale_fill_hue(direction = 1) +
+  scale_color_hue(direction = 1) +
+  ggthemes::theme_wsj() +
+  theme(legend.position = "none")+
+ ggplot2::labs(
+    x = "Months",
+    y = "Monthly NDVI",
+    fill = "Month"
+  ) +
+  theme(axis.title.y = element_text(size=15))
+ggsave("Figures_or_Maps/ndvi_month.png",plot=pre_month,device="png",dpi=500)
+
 ```
 
 ```{r echo=FALSE,fig.cap='Boxplot of Land surface temperature'}
@@ -275,7 +304,7 @@ knitr::include_graphics('Figures_or_Maps/pre_month.png')
 ```{r echo=FALSE}
 
 apa_table(lst_description,
-          caption = 'Table 1. Descriptive statistics of Land surface temperature',
+          caption = 'Descriptive statistics of Land surface temperature',
           note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
           escape = TRUE)
 ```
@@ -284,18 +313,37 @@ Monthly land surface temperature.
 
 ```{r echo=FALSE}
 apa_table(prc_description,
-          caption = 'Table 2. Descriptive statistics of Precipitation (mm/hr)',
+          caption = 'Descriptive statistics of Precipitation (mm/hr)',
           note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
           escape = TRUE)
 ```
 
 Monthly precipitation data covered a period of over 20 years. During this period, the average precipitation rate ranged from 0.12 to 0.22 $mm/hr$. These rates remained relatively constant throughout the month. December to April had a higher precipitation rate of around 0.40 $mm/hr$, while August to November had a lower rate ranging from 0.05 to 0 $mm/hr$. 
 
+
+
+Looking at the image, it is understood that every year due to the development of the city, the vegetation is changing in one place or another. The change between red and green is clearly seen in the image.
+
+```{r echo=FALSE}
+apa_table(ndvi_description,
+          caption = 'Descriptive statistics of NDVI',
+          note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
+          escape = TRUE)
+```
+
+December to March has the lowest NDVI which means County doesn't contain less vegetation during these months while May to October shows a higher NDVI which means County has healthier vegetation. The most variable months are April and October according to Global MODIS/Terra data.
+```{r echo=FALSE,fig.cap='Monthly NDVI of the Oktibbeha county'}
+knitr::include_graphics('Figures_or_Maps/ndvi_month.png')
+
+```
+
+It is clear that there is a correlation between vegetation and land surface temperature. In Oktibbeha county, for instance, the temperatures and NDVI are lower from November to March, while they are higher from April to  October. 
+
 ```{r echo=FALSE,fig.cap='Normalized Difference Vegetation Index Map of Oktibbeha County'}
 knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
 ```
+It is quite intriguing that Global Modis/Terra NDVI don't have any negative values. The reason for this may be the lower resolution or long-term daily average to the monthly average. The 30-meter Landsat 8 maps, on the other hand, showed negative NDVI values, which typically correspond to pixels associated with water or flooded marshes. For an ideal NDVI value of 1, a canopy that is fully alive has an NDVI of zero.
 
-Looking at the image, it is understood that every year due to the development of the city, the vegetation is changing in one place or another. The change between red and green is clearly seen in the image.
 
 ```{r echo=FALSE,fig.cap='Land cover /Land use map of the Oktibbeha county  '}
 knitr::include_graphics('Figures_or_Maps/landcover.png')

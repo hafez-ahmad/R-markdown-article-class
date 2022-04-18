@@ -78,6 +78,7 @@ Local and place-specific global climate change (LULCC) is a type of global clima
 
 Land cover changes can occur as a result of both human and climate drivers. For example, the demand for new settlements often results in the permanent loss of natural land, resulting in changes in the weather patterns, temperature, and precipitation [@hale2006land;@pielke2007overview]. Disturbance events such as wildfire and timber harvest are important factors influencing land cover. From 1985 to 2010, forest disturbances affected an average of approximately 11200 square miles per year in the contiguous United States, according to the North American forest dynamic dataset. The rate of forest disturbance decreased by about one-third between 2006 and 2010[@reidmiller2019fourth].
 
+The relationship between LST and NDVI is fascinating because it draws remote sensing scientists worldwide. The nature and strength of this relationship are strongly influenced by space and time. NDVI, on the other hand, is heavily influenced by seasonal variations in land cover. Seasonal changes also influence LST[@guha2020land].
 
 In this mini paper, the **objectives** are (a) to present results of an analysis of the Historical land surface temperature and precipitation data, (b) to quantify normalized vegetation index and Land surface temperature for five years and estimate the land use /land cover, (c) to determine the relationship  between vegetation and land use.
 
@@ -94,7 +95,7 @@ Oktibbeha County and the city of Starkville are thriving communities that have g
 
 ## Data collection
 
-Landsat8 imageries (land 8-9 OLI /tirs c2 l1) from 2018 to 2022 for February/March and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)" . Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" .Historical NDVI data was also downloaded from MODIS/Terra Vegetation database 'MOD13A1.006 Terra Vegetation Indices 16-Day Global 500m' via Google earth engine. Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis. Apartment these, Temporal Land Surface Temperature and NDVI were extracted from 30 meter Landsat 8 imageries.
+Landsat8 imageries (land 8-9 OLI /tirs c2 l1: Landsat 8 Operational Land Imager/Thermal Infrared Sensors) from 2018 to 2022 for February/March and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)". Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km" .Historical NDVI data was also downloaded from MODIS/Terra Vegetation database 'MOD13A1.006 Terra Vegetation Indices 16-Day Global 500m' via Google earth engine. Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis. Apartment these, Temporal Land Surface Temperature and NDVI were extracted from 30 meter Landsat 8 imageries.
 
 Table Landsat 8 data description
 
@@ -157,9 +158,10 @@ $Q_{cal}$ =  Quantized and calibrated standard product pixel values (DN)
 For the purpose for calculating Land surface temperature . The Conversion Top of Atmospheric reflactance to At satellite brightness temperature was done via the following equation.
 
 $T = \frac{K_2}{\ln \big( \frac{K_1}{{L _ \lambda} }+ 1 \big)}$
+
 where
 
-T  =  Top of atmosphere brightness temperature (K)where:
+T  =  Top of atmosphere brightness temperature (Kelvin)
 $L_\lambda$  =TOA spectral radiance $(Watts/( m^2 * srad * μm))$
 $K_1$  =Band-specific thermal conversion constant from the metadata (K1_CONSTANT_BAND_x, where x is the thermal band number)
 $K_2$  =Band-specific thermal conversion constant from the metadata (K2_CONSTANT_BAND_x, where x is the thermal band number) 
@@ -340,7 +342,7 @@ knitr::include_graphics('Figures_or_Maps/ndvi_month.png')
 It is clear that there is a correlation between vegetation and land surface temperature. In Oktibbeha county, for instance, the temperatures and NDVI are lower from November to March, while they are higher from April to  October. 
 
 ```{r echo=FALSE,fig.cap='Normalized Difference Vegetation Index Map of Oktibbeha County'}
-knitr::include_graphics('Figures_or_Maps/ndvi_2020_06.png')
+knitr::include_graphics('Figures_or_Maps/ndvimap.png')
 ```
 It is quite intriguing that Global Modis/Terra NDVI don't have any negative values. The reason for this may be the lower resolution or long-term daily average to the monthly average. The 30-meter Landsat 8 maps, on the other hand, showed negative NDVI values, which typically correspond to pixels associated with water or flooded marshes. For an ideal NDVI value of 1, a canopy that is fully alive has an NDVI of zero.
 

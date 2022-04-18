@@ -285,3 +285,34 @@ for (i in 1:length(lstrasters)){
 lstmapped<- ggpubr::ggarrange(plotlist = lstplotlist,nrow = 3,ncol = 3,labels = c("a","b","c","d","e","f","g","h","i"),common.legend = TRUE)
 #gpubr::ggexport("lstmap.png",plot=lstmapped)
 ggsave("lstmap.png",plot=lstmapped,device="png",dpi=500,width = 3,height = 2, units = "in")
+
+
+# NDVI
+setwd("D:\\home_tower\\Home\\hahmad\\Data")
+ndvirasters<- list.files(pattern = "(ndvi2)")
+ndvirasters
+
+ndviplotlist<-c()
+for (i in 1:length(ndvirasters)){
+  ndvidata<-raster::projectRaster(raster(ndvirasters[i]),crs="+proj=longlat +datum=WGS84 +no_defs")
+  data<- as.data.frame(ndvidata,xy=TRUE)
+  names(data)<- c('x','y','layer')
+  plotting<-ggplot(data=data)+
+    geom_tile(aes(x=x,y=y,fill=layer))+
+    scale_fill_gradientn(colors=brewer.pal(6,'RdYlGn'),
+                         name='NDVI',
+                         na.value = 'transparent',
+                         labels=(c("-1 ","-0.6 ","-0.2","0.2 ","0.6 ","1 " )),
+                         breaks=seq(-1,1,0.4),
+                         limits=c(-1,1),
+                         guide = 'colorbar')+
+    coord_equal()+
+    labs(xlab=NULL,                           
+         ylab=NULL)+
+    theme_void()
+  ndviplotlist[[i]]<-plotting
+}
+
+#title = paste0('LST:',substr(lstrasters[i],8,16))
+ndvimapped<- ggpubr::ggarrange(plotlist = ndviplotlist,nrow = 3,ncol = 3,labels = c("a","b","c","d","e","f","g","h","i"),common.legend = TRUE)
+ggsave("ndvimap.png",plot=ndvimapped,device="png",dpi=300,width = 14, height = 10)

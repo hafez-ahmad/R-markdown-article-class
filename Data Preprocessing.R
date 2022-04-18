@@ -145,14 +145,18 @@ for (i in 1:length(folders)){
   files4<-raster(list.files(pattern = 'B4.TIF',full.names = TRUE))
   files3<-raster(list.files(pattern = 'B3.TIF',full.names = TRUE))
   files2<-raster(list.files(pattern = 'B2.TIF',full.names = TRUE))
-  rasterstacked<- raster::stack(files4,files3,files2)
+  # B10 conversion  DN to Top of atmopsheric reflectance
+  fileop4<-calc(files4,fun = function(x){meta$CALRAD$gain[4]*x+meta$CALRAD$offset[4]})
+  fileop3<-calc(files3,fun = function(x){meta$CALRAD$gain[3]*x+meta$CALRAD$offset[3]})
+  fileo2<-calc(files2,fun = function(x){meta$CALRAD$gain[2]*x+meta$CALRAD$offset[2]})
+  rasterstacked<- raster::stack(fileop4,fileop3,fileo2)
   study<- spTransform(study, proj4string(files4)) 
   # cropped
   cropped<- crop(rasterstacked,extent(study))
   # masked
   masked<- mask(cropped,study)
-  # B10 conversio  DN to Top of atmopsheric reflectance
-  newB10<- calc(masked,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
-  writeRaster(newB10,paste0('D:\\home_tower\\Home\\hahmad\\GISdata\\','TOP',substr(names(files4),18,25)), overwrite=TRUE,format="GTiff")
- 
+  
+  writeRaster(masked,paste0('D:\\home_tower\\Home\\hahmad\\GISdata\\','TOP',substr(names(files4),18,25)), overwrite=TRUE,format="GTiff")
+  
 }
+

@@ -15,17 +15,24 @@ Department of Wildlife, Fisheries and Aquaculture
 
 Three scripts
 1. Data Preprocessing.R
+
 This contains all preprocessing related code.
 
- a.data extraction, and formatting 
+ a. Landsat data extraction, and formatting 
  
- b.Atmospheric correction 
+ b. Atmospheric correction 
  
  c. DN to Top of Reflectance,to land surface temperature
  
 2. Data analysis Classification and Mapping.R
-This contains all data analysis, land cover classification and mapping related code. 
+
+This contains all data analysis, 
+ a. NDVI estimation 
+ b.land cover classification and mapping related code. 
+ c. Land surface Temperature extraction from ToP images
+ d. Plotting 
 3. R Reproducible Scientific Article.Rmd
+
 This is the main R markdwon script which has all writing and formatting texts.
 
 Project File (R Reproducible Scientific Article.Rproj)

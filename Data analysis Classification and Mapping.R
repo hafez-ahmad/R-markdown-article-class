@@ -110,16 +110,99 @@ landusmap<-function(data){
 
 # plotting 
 p2020_2<- landusmap(as.data.frame(classified2020_6[[1]],xy=TRUE))
+
+
+
+# land cover updated
+#id class name
+#1 vegetation
+#2 builtup
+#3 baresoil
+#4 roads/highway
+#5 water
+
+# land cover
+classify_raster <- function(trainshp, rasterfile){
+  # training sample
+  sampl<- terra::vect(trainshp)
+  # random sample
+  ptsampl<- terra::spatSample(sampl,1000,method='random')
+  # make matrix
+  xy<-as.matrix(geom(ptsampl)[,c('x','y')])
+  # extract data
+  df<- raster::extract(rasterfile,xy)[,-1]
+  # data frame of sample
+  sampdata<- data.frame(class=ptsampl$Classname,df)
+  # set up model and train model
+  #cartmodel<-rpart::rpart(as.factor(class)~., data=sampdata)
+  cartmodel<-e1071::svm(as.factor(class)~., data=sampdata)
+  # predict classes
+  classified<- predict(rasterfile,cartmodel,type='class',na.rm=TRUE)
+  return(classified)
+  
+}
+# apply function 
+# multiband raster files
+classified2018_3<-classify_raster('W:/Home/hahmad/public/temp/2018_03.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20180303.tif'))
+classified2018_6<-classify_raster('W:/Home/hahmad/public/temp/2018_06.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20180607.tif'))
+
+classified2019_3<-classify_raster('W:/Home/hahmad/public/temp/2019_03.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20180607.tif'))
+classified2019_6<-classify_raster('W:/Home/hahmad/public/temp/2019_07.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20190306.tif'))
+
+classified2020_3<-classify_raster('W:/Home/hahmad/public/temp/2019_03.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20200221.tif'))
+classified2020_6<-classify_raster('W:/Home/hahmad/public/temp/2019_03.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20200612.tif'))
+
+classified2021_3<-classify_raster('W:/Home/hahmad/public/temp/2021_03.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20210223.tif'))
+classified2021_6<-classify_raster('W:/Home/hahmad/public/temp/2021_06.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20210615.tif'))
+
+classified2022_3<-classify_raster('W:/Home/hahmad/public/temp/2022_03.shp',raster::stack('D:/home_tower/Home/hahmad/GISdata/TOP20220314.tif'))
+
+
+landusmap<-function(data){
+  ggplot(data =data ) +
+    geom_raster(aes(x = x, y = y, fill = as.character(layer_value))) + 
+    scale_fill_manual(name = "Land cover",
+                      values = c("#FFD700", "#FF4040", "#DCDCDC", "#458B00", "#104E8B"),
+                      labels = c('Baresoil','Built up','Roads/Highway','Vegetation','Water'),
+                      na.translate = FALSE) +
+    coord_sf(expand = F,crs=3160) +
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_blank(),
+          panel.background = element_rect(fill = "white", color = "black"))+
+    # spatial-aware automagic scale bar
+    annotation_scale(location = "bl") +
+    # spatial-aware automagic north arrow
+    annotation_north_arrow(location = "br", which_north = "true",height = unit(1.5, "cm"),width = unit(1, "cm"))
+}
+
+library(ggspatial)
+# color: 'Vegetation','Builtup','Baresoil','Roads/Highway','Water'
+# plotting 
+p2018_3<- landusmap(as.data.frame(classified2018_3,xy=TRUE))
 #classified2021_2
-p2021_2<- landusmap(as.data.frame(classified2021_2[[1]],xy=TRUE))
-p2021_6<- landusmap(as.data.frame(classified2021_6[[1]],xy=TRUE))
-p2022_3<- landusmap(as.data.frame(classified2022_3[[1]],xy=TRUE))
+p2018_6<- landusmap(as.data.frame(classified2018_6,xy=TRUE))
 
+p2019_3<- landusmap(as.data.frame(classified2019_3,xy=TRUE))
+p2019_6<- landusmap(as.data.frame(classified2019_6,xy=TRUE))
+
+p2020_3<- landusmap(as.data.frame(classified2020_3,xy=TRUE))
+#classified2021_2
+p2020_6<- landusmap(as.data.frame(classified2020_6,xy=TRUE))
+
+p2021_3<- landusmap(as.data.frame(classified2021_3,xy=TRUE))
+p2021_6<- landusmap(as.data.frame(classified2021_6,xy=TRUE))
+
+p2022_3<- landusmap(as.data.frame(classified2022_3,xy=TRUE))
+
+setwd("D:\\home_tower\\Home\\hahmad\\Data")
 # subplots
-landcover<-ggarrange(p2020_2, p2021_2, p2021_6,p2022_3,nrow = 2,ncol=2,labels = c("a","b","c","d"),label.x=0.9,common.legend = TRUE)
+landcover<-ggarrange(p2018_3,p2018_6,p2019_3,p2019_6,p2020_3,p2020_6,p2021_3,p2021_6,p2022_3,nrow = 3,ncol=3,labels = c("a","b","c","d","e","f","g","h","i"),common.legend = TRUE)
 # save it 
-ggsave("Figures_or_Maps/landcover.png",plot=landcover,device="png",dpi=500)
+ggsave("landcover.png",plot=landcover,device="png",dpi=300,width = 14, height = 10,units='in')
 
+# area calculation and bar plot
 
 landdf<- as.data.frame(classified2020_6[4])
 landdf$AreaKm2020_2<-classified2020_6$area_km
@@ -313,6 +396,14 @@ for (i in 1:length(ndvirasters)){
   ndviplotlist[[i]]<-plotting
 }
 
-#title = paste0('LST:',substr(lstrasters[i],8,16))
+
 ndvimapped<- ggpubr::ggarrange(plotlist = ndviplotlist,nrow = 3,ncol = 3,labels = c("a","b","c","d","e","f","g","h","i"),common.legend = TRUE)
 ggsave("ndvimap.png",plot=ndvimapped,device="png",dpi=300,width = 14, height = 10)
+
+
+# classification classes
+# method [manual/or landcover]
+# colors scheme?
+# content
+# correlation analysis
+# cloud cover

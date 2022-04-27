@@ -5,7 +5,7 @@ This is solely made for My Graduate 'Spring2022,WFA 8993 Special Topic: R for Ma
 Mississippi State University
 Department of Wildlife, Fisheries and Aquaculture
 
-# Instructions how to contribute 
+# Instructions how to contribute [Pleae use master branch]
 ## Download git software [https://git-scm.com/downloads] , and create account in www.github.com
 ## then configure your git software with your email and user name
 ## send your github user name email to hafezahmad100@gmail.com  
@@ -27,10 +27,12 @@ This contains all preprocessing related code.
 2. Data analysis Classification and Mapping.R
 
 This contains all data analysis, 
+
  a. NDVI estimation.  \n
  b.land cover classification and mapping related code \n. 
  c. Land surface Temperature extraction from ToP images \n
  d. Plotting and Mapping
+ 
 3. R Reproducible Scientific Article.Rmd
 
 This is the main R markdwon script which has all writing and formatting texts.

@@ -33,6 +33,80 @@ Oktibbeha<- cowplot::ggdraw() +
 ggsave("Figures_or_Maps/Oktibbeha.png",plot=Oktibbeha,device="png",dpi=500)
 
 # land surface and ndvi plot
+# ndvi as dataframe
+# set up working directory
+# empty vector of ndvi
+ndvilist<-c()
+setwd("D:\\home_tower\\Home\\hahmad\\R")
+years<-list.dirs()
+years<- years[ !years %in% years[1]]
+years<-substr(years,20,27)
+
+for (i in 1:length(folders)){
+  # go to first folder and find all .TIF files
+  setwd(folders[i])
+  files4<-raster(list.files(pattern = 'B4.TIF',full.names = TRUE))
+  files5<-raster(list.files(pattern = 'B5.TIF',full.names = TRUE))
+  study<- spTransform(study, proj4string(files4)) 
+  # cropped
+  cropped4<- crop(files4,extent(study))
+  # masked
+  masked4<- mask(cropped4,study)
+  # cropped
+  cropped5<- crop(files5,extent(study))
+  # masked
+  masked5<- mask(cropped5,study)
+  # divide b4 with b5
+  ndvi <- overlay(x = masked4, y = masked5, fun = function(x,y) (y-x)/(y+x))
+  writeRaster(ndvi,paste0('D:\\home_tower\\Home\\hahmad\\Data\\','ndvi',substr(names(files4),18,25)), overwrite=TRUE,format="GTiff")
+  # calculate NDVI mean
+  ndvi_mean<- cellStats(ndvi,stat="mean")
+  # append to ndvilist and with respective names of rasterfiles
+  ndvilist<- c(ndvilist,ndvi_mean)
+}
+# ndvi as dataframe
+ndvidf<- as.data.frame(ndvilist)
+ndvidf$date<-years
+
+write.csv(ndvidf,'D:\\home_tower\\Home\\hahmad\\Data\\ndvi.csv',row.names = FALSE)
+
+setwd("D:\\home_tower\\Home\\hahmad\\R")
+lstlist<- c()
+# temperature
+for (i in 1:length(folders)){
+  # go to first folder and find all .TIF files
+  setwd(folders[i])
+  metafiles<-list.files(pattern = '(MTL)+(.txt)',full.names = TRUE)
+  # read meta data
+  meta<-readMeta(metafiles)
+  b10_11_k1<- meta$CALBT[1]
+  b10_11_k2<- meta$CALBT[2]
+  K1_CONSTANT_BAND_10 = b10_11_k1[[1]][1] # b10_k1
+  K2_CONSTANT_BAND_10 = b10_11_k2[[1]][1]
+  files10<-raster(list.files(pattern = 'B10.TIF',full.names = TRUE))
+  study<- spTransform(study, proj4string(files10)) 
+  # cropped
+  cropped10<- crop(files10,extent(study))
+  # masked
+  masked10<- mask(cropped10,study)
+  # B10 conversio  DN to Top of atmopsheric reflectance
+  newB10<- calc(masked10,fun = function(x){meta$CALRAD$gain[j]*x+meta$CALRAD$offset[j]})
+  # thermal conversion
+  #newTOPk<- calc( newB10,fun = function(x){meta$CALBT[2][[1]][2]/log(meta$CALBT[1][[1]][2]/x+1)})
+  newTOPk<-calc(newB10,fun=function(x){K2_CONSTANT_BAND_10/log(K1_CONSTANT_BAND_10/x+1)})
+  # kelvin to celcius
+  newCelcius<- calc(newTOPk,fun = function(x){x-273.15})
+  writeRaster(newCelcius,paste0('D:\\home_tower\\Home\\hahmad\\Data\\','Celcius',substr(names(files10),18,25)), overwrite=TRUE,format="GTiff")
+  # calculate NDVI mean
+  lst_mean<- cellStats(newCelcius,stat="mean")
+  # append to ndvilist and with respective names of rasterfiles
+  lstlist<- c(lstlist,lst_mean)
+}
+
+# ndvi as dataframe
+lstdf<- as.data.frame(lstlist)
+lstdf$date<-years
+write.csv(lstdf,'D:\\home_tower\\Home\\hahmad\\Data\\lstdf.csv',row.names = FALSE)
 
 library(ggpubr)
 ndvi_lst<- cbind(lstdf,ndvidf)
@@ -116,10 +190,11 @@ p2020_2<- landusmap(as.data.frame(classified2020_6[[1]],xy=TRUE))
 # land cover updated
 #id class name
 #1 vegetation
-#2 builtup
+#2 builtup #4 roads/highway
 #3 baresoil
-#4 roads/highway
 #5 water
+
+# veg # bul # bar # wat
 
 # land cover
 classify_raster <- function(trainshp, rasterfile){
@@ -203,29 +278,43 @@ landcover<-ggarrange(p2018_3,p2018_6,p2019_3,p2019_6,p2020_3,p2020_6,p2021_3,p20
 ggsave("landcover.png",plot=landcover,device="png",dpi=300,width = 14, height = 10,units='in')
 
 # area calculation and bar plot
+df<- data.frame(class= c('Barrenland','Builtup','Vegetation','Water'))
+df$Km2018_3<-area_calculation(classified2018_3)[[1]]
+df$Km2018_6<-area_calculation(classified2018_6)[[1]]
+df$Km2019_3<-area_calculation(classified2019_3)[[1]]
+df$Km2019_6<-area_calculation(classified2019_6)[[1]]
+df$Km2020_2<-area_calculation(classified2020_2)[[1]]
+df$Km2020_6<-area_calculation(classified2020_6)[[1]]
+df$Km2021_2<-area_calculation(classified2021_2)[[1]]
+df$Km2021_6<-area_calculation(classified2021_6)[[1]]
+df$Km2022_3<-area_calculation(classified2022_3)[[1]]
 
-landdf<- as.data.frame(classified2020_6[4])
-landdf$AreaKm2020_2<-classified2020_6$area_km
-landdf$AreaKm2021_2<-classified2021_2$area_km
-landdf$AreaKm2021_6<-classified2021_6$area_km
-landdf$AreaKm2022_3<-classified2022_3$area_km
-landdf<- melt(landdf)
+df<-df %>% 
+  mutate(km2018=Km2018_3+Km2018_6/2,
+         km2019=Km2019_3+Km2019_6/2,
+         km2020=Km2020_2+Km2020_6/2,
+         km2021=Km2021_2+Km2021_6/2) %>% 
+  select(class,km2018,km2019,km2020,km2021,Km2022_3)
+
+library(reshape2)
+landdf<- melt(df)
 names(landdf)<- c('landcover','Year','AreaKm')
+landdf
 
+levels(landdf$Year)[levels(landdf$Year)=='km2018']<-"2018"
+levels(landdf$Year)[levels(landdf$Year)=='km2019']<-"2019"
+levels(landdf$Year)[levels(landdf$Year)=='km2020']<-"2020"
+levels(landdf$Year)[levels(landdf$Year)=='km2021']<-"2021"
+levels(landdf$Year)[levels(landdf$Year)=='Km2022_3']<-"2022"
 
-levels(landdf$Year)[levels(landdf$Year)=='AreaKm2020_2']<-"Feb,2020"
-levels(landdf$Year)[levels(landdf$Year)=='AreaKm2021_2']<-"Feb,2021"
-levels(landdf$Year)[levels(landdf$Year)=='AreaKm2021_6']<-"Jun 2021"
-levels(landdf$Year)[levels(landdf$Year)=='AreaKm2022_3']<-"Mar,2022"
 
 
 landcoverbar<-ggplot(landdf) +
   aes(x = landcover, fill = landcover, weight = AreaKm) +
   geom_bar() +
   scale_fill_manual(
-    values = c(Baresoil = "#FFD700",
-               `Built up` = "#FF4040",
-               Roads = "#DCDCDC",
+    values = c(Barrenland = "#FFD700",
+               `Builtup` = "#FF4040",
                Vegetation = "#458B00",
                Water = "#104E8B")
   ) +
@@ -237,8 +326,10 @@ landcoverbar<-ggplot(landdf) +
   ggthemes::theme_stata() +
   theme(legend.position = "none") +
   facet_wrap(vars(Year))
-
+landcoverbar
 # save it 
+ggsave("W:\\Home\\hahmad\\public\\landcoverbar.png",plot=landcoverbar,device="png",dpi=500)
+
 ggsave("Figures_or_Maps/landcoverbar.png",plot=landcoverbar,device="png",dpi=500)
 
 

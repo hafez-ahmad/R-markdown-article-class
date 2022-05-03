@@ -82,7 +82,7 @@ In this mini paper, the **objectives** are (a) to present the results of an anal
 
 Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. Its area is approximately 118 square kilometers, and it borders six other counties: Lowndes, Winstons, Noxubee, Webster, Choctaw, and Claw. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
-```{r echo=FALSE,fig.cap=' Study Map of Oktibbeha county'}
+```{r echo=FALSE,fig.cap='Study Map of Oktibbeha County, Mississippi, USA'}
 knitr::include_graphics('Figures_or_Maps/Oktibbeha.png')
 ```
 Oktibbeha County and the city of Starkville are thriving communities that have grown dramatically in the last fifty years. The central east/west corridor connecting Mississippi and Alabama is US Highway 82. It cuts through the northern half of Oktibbeha County and serves as the primary regional transportation network. The county has a diverse landscape and terrain, including small lakes, creeks, swamps, forests, etc.One-third of the country is flatwood, which is well suited to growing pine timber. The remainder of the county on the western side is very productive of pine timber and produces row crops well, especially if fertilized [@fox1905oktibbeha]. When creating a land-use map, residential areas to industrial areas are considered built up, lakes, rivers, canals, and wetland areas are considered water, and more miniature forests to densely forested areas, including parks, are considered vegetation. It is located within three physiographic regions. The eastern portion extends into the black or northeastern Prairie regions, while the Pontotoc ridge bounds the western portion. Interior Flatwoods encompass the western portion of the county. Predominantly pine-covered regions in the southeastern United States are also found. The county's elevation ranges from 50m in the Tibble Creek floodplain in the northeastern corner to 180m in the southwestern corner[@leidolf2002flora;@brent1973soil].
@@ -123,7 +123,7 @@ Correlation analysis is a statistical method used to examine the relationship be
 $r_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)\left(Y_{i}-\bar{Y}\right)}{\sqrt{{\Sigma}_{\Sigma_{i}=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} \sqrt{{\sum}_{\Sigma_{i}=1}^{n}\left(Y_{i}-\bar{Y}\right)^{2}}}---(2)$
  where X and Y are variables.
 
-##and use/land cover classification
+## Land use/land cover classification
 In order to classify land use/land cover from Landsat images from 2018 to 2022, a support vector machine algorithm was used.
 
 | Classes      | Description                                                                         |
@@ -132,6 +132,8 @@ In order to classify land use/land cover from Landsat images from 2018 to 2022, 
 | Built up     | Residential areas, industrial, transportation, roads, mixed urban, and other urban. |
 | Baresoil     | Land with exposed soil and soil without grasses.                                    |
 | Water bodies | River, channel, creeks, lakes, wetland, streams and land with water.                |
+
+## Support vector machine
 
 Support vector machines are not parametric classifiers. It was proposed by the @vapnik2015uniform and later explained by @vapnik1999overview. SMV can be easily trained by separable classes. If the training data with k number of samples, then it is represented as ${X_i y_i},i=1,..k$ where $X ∈ R^N$ is an N dimensional space and $Y ∈ {-1,+1}$ is classes label ,then these classes are linearly separable if there a vector W which perpendicular to the linear hyperplane and a scaler b  indicating the offset of the separating hyperplane from the origin$. 
 
@@ -333,7 +335,8 @@ apa_table(ndvi_description,
 ```
 
 December to March has the lowest NDVI which means County doesn't contain less vegetation during these months while May to October shows a higher NDVI which means County has healthier vegetation. The most variable months are April and October according to Global MODIS/Terra data.
-```{r echo=FALSE,fig.cap='Monthly NDVI of the Oktibbeha county'}
+
+```{r echo=FALSE,fig.cap=' Monthly NDVI of the Oktibbeha County'}
 knitr::include_graphics('Figures_or_Maps/ndvi_month.png')
 
 ```
@@ -344,13 +347,13 @@ knitr::include_graphics('Figures_or_Maps/ndvi_month.png')
 
 It is quite intriguing that Global MODIS/Terra NDVI don't have any negative values. The reason for this may be the lower resolution or long-term daily average to the monthly average. The 30-meter Landsat 8 maps, on the other hand, showed negative NDVI values, which typically correspond to pixels associated with water or flooded marshes. For an ideal NDVI value of 1, a canopy that is fully alive has an NDVI of zero.
 
-```{r echo=FALSE,fig.cap='Normalized Difference Vegetation Index Map of Oktibbeha County. In this subplot, lebel a starts with February of 2018 and the last label i indicated March of 2022'}
+```{r echo=FALSE,fig.cap=' Normalized Difference Vegetation Index Map of Oktibbeha County. In this subplot, label a starts with February of 2018, and the last label i indicated March of 2022'}
 knitr::include_graphics('Figures_or_Maps/ndvimap.png')
 ```
 
-Oktibbeha county covered much vegetation Throughout the different years. This was at least proved from 2018 to 2022. However, Starkville city had only a lower NDVI value which was spotted as brightness colored in the figure. Stark Ville experienced a bit more urbanization due to its urban infrastructures and university-based population, and growth exception occurred in the d labeled. This image contained a little more cloud. The cloud has only appeared in this image, but vegetation still was spotted as dark green. Due to the spot time of this work, the cloud removal process did not apply. That's why the cloud still remained in that image. Overall other images were well enough to make a conclusion about the vegetation distribution for the Oktibbeha county. 
+Oktibbeha county covered much vegetation Throughout the different years. This was at least proved from 2018 to 2022. However, Starkville city had only a lower NDVI value which was spotted as brightness colored in the figure. Starkville experienced a bit more urbanization due to its urban infrastructures and university-based population, and growth exception occurred in the d labeled. This image contained a little more cloud. The cloud has only appeared in this image, but vegetation still was spotted as dark green. Due to the spot time of this work, the cloud removal process did not apply. That's why the cloud still remained in that image. Overall other images were well enough to make a conclusion about the vegetation distribution for the Oktibbeha county. 
 
-## relationship between NDVI vs LST
+## Relationship between NDVI vs LST
 
 It is clear that there is a correlation between vegetation and land surface temperature. In Oktibbeha county, for instance, the temperatures and NDVI are lower from November to March, while they are higher from April to  October (see figure 6). 
 ```{r echo=FALSE,fig.cap=' Land Surface Temperature and NDVI relationship'}
@@ -385,7 +388,7 @@ The table and Figure reveal both positive and negative changes that occurred in 
 knitr::include_graphics('Figures_or_Maps/landcoverbar.png')
 ```
 
-According to the figure 8, the most variable land cover classes are bare soil, roads/highways, and vegetation. As a five-year analysis of land cover/land use (see figure 8), there is one thing clear vegetated or forested areas are the dominant area in the Oktibbeha county. The Oktibbeha Starkville city has the most built-up area colored in red. The built-up areas are slowly increasing from 2018 to 2020. However, water bodies are not significantly detected due to lower resolution or sampling error. Other classes lie barren land is constant across the years—the change and result of classified areas in the squared kilometers. 
+According to the figure 8 and 9, the most variable land cover classes are bare soil, roads/highways, and vegetation. As a five-year analysis of land cover/land use (see figure 9), there is one thing clear vegetated or forested areas are the dominant area in the Oktibbeha county. The Oktibbeha Starkville city has the most built-up area colored in red. The built-up areas are slowly increasing from 2018 to 2020. However, water bodies are not significantly detected due to lower resolution or sampling error. Other classes lie barren land is constant across the years—the change and result of classified areas in the squared kilometers. 
 
 As a result of the subtropical latitude of Oktibbeha county and the extensive lands to the north, the county's climate is warm and humid. It is also influenced by warm temperatures from the Gulf of Mexico [@brent1973soil]. The average annual precipitation is 141.86 cm, with monthly precipitation ranging from 8.23 cm in October to 15.24 cm in March. The wettest seasons are winter and spring, with fall being the driest. Snow is uncommon and only lasts for a short time on the ground. The average temperature in this county ranges from 5.2 degrees Celsius in January to a high of 27 degrees Celsius in July. The average number of frost-free days (above O degrees C) in a year is 226[@leidolf2002flora]. 
 

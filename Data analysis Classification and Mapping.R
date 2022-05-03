@@ -497,4 +497,69 @@ ggsave("ndvimap.png",plot=ndvimapped,device="png",dpi=300,width = 14, height = 1
 # colors scheme?
 # content
 # correlation analysis
+lst<- read_csv("data/landsurface temperature2010_22.csv") %>% rename('date'='system:time_start')
+Prci<-read_csv("data/Precipitation1998_19.csv")
+ndvi<- read_csv('data/NDVI2000_2022.csv') %>%  rename('date'='system:time_start')
+# date change character to date time from lubridate library
+lst$date<- mdy(lst$date)
+# precipitation 
+Prci$date<- mdy(Prci$date)
+# ndvi from modis/terra
+ndvi$date<-dmy(ndvi$date)
+# adding column as month 
+lst$Month<- month(lst$date,label = TRUE)
+Prci$Month<- month(Prci$date,label = TRUE)
+ndvi$Month<- month(ndvi$date,label=TRUE)
+# year 
+lst$year<- year(lst$date)
+Prci$year<- year(Prci$date)
+ndvi$year<- year(ndvi$date)
+
+
+lstu<-lst %>% group_by(Month,year) %>% summarise(lst=mean(LST_Day_1km))
+ndviu<-ndvi %>% group_by(Month,year) %>% summarise(ndvi=mean(NDVI))
+preu<- Prci%>% group_by(Month,year) %>% summarise(precipitation=mean(precipitation))
+
+all<-lstu %>% full_join(ndviu,by=c('Month','year')) %>% full_join(preu,by=c('Month','year'))
+
+
+# ndvi and lst
+ndvi_lst<- ggscatter(
+  all,
+  x='lst',y='ndvi',add='reg.line',
+  ylab='Normalized Difference Vegetation Index',
+  xlab='Land Surface  Temperature (C)',
+  add.params = list(color = "red", fill = "lightgray"), # Customize regression line
+  conf.int = TRUE # Add confidence interval
+)+stat_cor(
+  aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
+  label.y = 0.8)
+ndvi_prc<- ggscatter(
+  all,
+  x='precipitation',y='ndvi',add='reg.line',
+  ylab='Normalized Difference Vegetation Index',
+  xlab='Precipitation(mm/hr)',
+  add.params = list(color = "red", fill = "lightgray"), # Customize regression line
+  conf.int = TRUE # Add confidence interval
+)+stat_cor(
+  aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
+  label.y = 0.48)
+
+lst_prc<- ggscatter(
+  all,
+  x='precipitation',y='lst',add='reg.line',
+  ylab='Land Surface  Temperature (C)',
+  xlab='Precipitation(mm/hr)',
+  add.params = list(color = "red", fill = "lightgray"), # Customize regression line
+  conf.int = TRUE # Add confidence interval
+)+stat_cor(
+  aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
+  label.y = 15)
+
+relll<-ggarrange(ndvi_lst,ndvi_prc,lst_prc,nrow = 1,ncol=3,labels = c("a","b","c"))
+
+ggsave('Figures_or_Maps/ndvilst.png',plot=relll,device="png",dpi=300,width = 14, height = 10,units='in')
+
+
+
 # cloud cover

@@ -345,7 +345,7 @@ knitr::include_graphics('Figures_or_Maps/ndvi_month.png')
 
 ## Spatio- Temporal distriution of Vegetation and Land surface temperature analysis
 
-It is quite intriguing that Global MODIS/Terra NDVI don't have any negative values. The reason for this may be the lower resolution or long-term daily average to the monthly average. The 30-meter Landsat 8 maps, on the other hand, showed negative NDVI values, which typically correspond to pixels associated with water or flooded marshes. For an ideal NDVI value of 1, a canopy that is fully alive has an NDVI of zero.
+It is quite intriguing that Global MODIS/Terra NDVI don't have any negative values. The reason for this may be the lower resolution or long-term daily average to the monthly average. The 30-meter Landsat 8 maps, on the other hand, showed negative NDVI values, which typically correspond to pixels associated with water or flooded marshes. For an ideal NDVI value of 1, a canopy that is fully alive has an NDVI of zero.Except in some areas like Starkville, Oktibbeha county is largely covered by small to dense vegetation. The NDVI for Starkville city is lower because it has much more built-up areas than the whole county. The NDVI ranged between 0.21 and 0.46 during the study period from 2018 to 2022. Higher Vegetated areas are found in the months of June, which is around 0.46, whereas February or March show lower vegetation. The reason is that December to March is the winter season and After that summer season and fall season. During Fall, All/ Most of the trees have fresh leaves; June has a higher NDVI value. 
 
 ```{r echo=FALSE,fig.cap=' Normalized Difference Vegetation Index Map of Oktibbeha County. In this subplot, label a starts with February of 2018, and the last label i indicated March of 2022'}
 knitr::include_graphics('Figures_or_Maps/ndvimap.png')
@@ -361,6 +361,7 @@ knitr::include_graphics('Figures_or_Maps/ndvilst.png')
 ```
 
 R squared value of 0.88 indicates that there is a good relationship between remotely observed NDVI and Land Surface temperature (see the Figure 6).
+Precipitation vs. NDVI or Land surface temperature vs. Precipitation graph ( subfigure labeled a and c in figure 6) seems negatively correlated. These two have 0.028, and 0.044 r squared values, respectively. 
 
 ## Spatio- Temporal distriution of Land surface temperature analysis
 ```{r echo=FALSE,fig.cap=' Map of the  Land Surface Temperature for the Oktibbeha county. Here  a starts with March of 2018, then b is the June of 2018 and likelywise i labels is the March of 2022'}

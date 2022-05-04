@@ -19,15 +19,15 @@ affiliation:
     institution   : "Department of Oceanography, University of Chittagong,Bangladesh"
 
 authornote: |
-  This is solely made for My Graduate 'Spring2022, WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.
+  This is solely made for My Graduate 'Spring2022, WFA 8993 Special Topic: R for Managing Wildlife and Fisheries Data' class for developing Reproducible Research Article using R markdown package.Github link: https://github.com/hafez-ahmad/R-markdown-article-class/tree/master
 
   
 abstract: |
-  The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2018 to 2022, along with land surface temperature and precipitation in Oktiheba county, Mississippi. Then Additional Vegetation data and land surface temperature  data from Global MODIS/Terra were retrieved via Google Earth Engine .Throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June, experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$.Based on a five-year analysis of land cover/land use, the dominant area in Oktibbeha county is vegetated or forested. Most of the built-up area is in Starkville City. Between 2018 and 2020, the built-up area is gradually expanding. Due to the lower resolution or sampling error, water bodies are difficult to detect. Other classes of barren land have remained constant over the years--the change.
+  The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2018 to 2022, along with land surface temperature and precipitation in Oktibbeha county, Mississippi. Then Additional Vegetation data and land surface temperature  data from Global MODIS/Terra were retrieved via Google Earth Engine. Landsat 8 imageries showed that land surface temperatures (LST) ranged from 5 to 26$^0C$.Based on MODIS data, throughout the year, the average land surface temperature (LST) ranges from 9 $^0C$ to 28 $^0C$. January has the coldest LST at 9.16 $^0C$, and July has the hottest LST at 28.55$^0C$. According to data recorded between 2010 and 2022, January and December experienced the lowest LST, ranging from -0.5 to -0.3$^0C$, whereas August and June, experienced higher LST, ranging from 35.5 $^0C$ to 33.77$^0C$.Based on a five-year analysis of land cover/land use, the dominant area in Oktibbeha county is vegetated or forested. Most of the built-up area is in Starkville City. Between 2018 and 2020, the built-up area is gradually expanding. Due to the lower resolution or sampling error, water bodies are difficult to detect. Other classes of barren land have remained constant over the years.A reproducible scientific article was made using Rmarkown as the primary objective.
 
   
 keywords          : "Rmarkdown, R, Remote sensing, NDVI, Land use, and LST"
-wordcount         : "2983"
+wordcount         : "3414"
 
 bibliography      : ["r-references.bib"]
 
@@ -82,7 +82,7 @@ In this mini paper, the **objectives** are (a) to present the results of an anal
 
 Oktibbeha County is a micropolitan county in east-central Mississippi that is home to Starkville city and Mississippi State University. The county is located within Mississippi's golden triangle region. The name of the county is derived from a Native American term that means "bloody water" or "icy creek" [@gannett1902origin]. Its area is approximately 118 square kilometers, and it borders six other counties: Lowndes, Winstons, Noxubee, Webster, Choctaw, and Claw. According to the 2020 United States Census, the county had 51,788 people, 17,798 households, and 9,263 families.
 
-```{r echo=FALSE,fig.cap='Study Map of Oktibbeha County, Mississippi, USA'}
+```{r echo=FALSE , fig.cap= " Study Map of Oktibbeha County, Mississippi, USA"}
 knitr::include_graphics('Figures_or_Maps/Oktibbeha.png')
 ```
 Oktibbeha County and the city of Starkville are thriving communities that have grown dramatically in the last fifty years. The central east/west corridor connecting Mississippi and Alabama is US Highway 82. It cuts through the northern half of Oktibbeha County and serves as the primary regional transportation network. The county has a diverse landscape and terrain, including small lakes, creeks, swamps, forests, etc.One-third of the country is flatwood, which is well suited to growing pine timber. The remainder of the county on the western side is very productive of pine timber and produces row crops well, especially if fertilized [@fox1905oktibbeha]. When creating a land-use map, residential areas to industrial areas are considered built up, lakes, rivers, canals, and wetland areas are considered water, and more miniature forests to densely forested areas, including parks, are considered vegetation. It is located within three physiographic regions. The eastern portion extends into the black or northeastern Prairie regions, while the Pontotoc ridge bounds the western portion. Interior Flatwoods encompass the western portion of the county. Predominantly pine-covered regions in the southeastern United States are also found. The county's elevation ranges from 50m in the Tibble Creek floodplain in the northeastern corner to 180m in the southwestern corner[@leidolf2002flora;@brent1973soil].
@@ -91,7 +91,7 @@ Oktibbeha County and the city of Starkville are thriving communities that have g
 
 Landsat8 imageries (land 8-9 OLI /tirs c2 l1: Landsat 8 Operational Land Imager/Thermal Infrared Sensors) from 2018 to 2022 for February/March and June with less than 10% cloud were downloaded from USGS earth explorer[https://earthexplorer.usgs.gov/]. Moreover, eight-day composite of Precipitation data from 2000 to 2022 was part of "GPM: Monthly Global Precipitation Measurement (GPM)". Furthermore, Land Surface Temperature was part of "MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km". Historical NDVI data was also downloaded from MODIS/Terra Vegetation database 'MOD13A1.006 Terra Vegetation Indices 16-Day Global 500m' via Google earth engine. Then Precipitation and land surface temperature data were clipped with the study area. Then they are converted comma separated format for further analysis. Apartment these, Temporal Land Surface Temperature and NDVI were extracted from 30 meters Landsat 8 imageries.
 
-Table Landsat 8 data description
+Table 1 Landsat 8 data description
 
 | Bands                      | Wave length (micrometer) | Resolution (meter) |
 |----------------------------|--------------------------|--------------------|
@@ -112,12 +112,13 @@ Table Landsat 8 data description
 ## NDVI calculation
 
 For the vegetation analysis, we used Normalized Difference Vegetation Index (NDVI).NDVI is a dimensionless index that depicts the difference between the reflectance of vegetation in the visible and near-infrared spectrum. It can be used to assess changes in plant health and vegetation density [@tucker2001higher]. An NDVI is calculated as a ratio of the red (R) value and the near-infrared (NIR) value. It ranges from -1.0 to 1.0, mainly representing greens, where negative values are mainly made up of clouds, snow, and water, and values close to zero are primarily made up of rocks and bare soil. A very low NDVI value (0.1 or less) corresponds to empty areas of rocks, sand, or snow. Moderate values (between 0.2 and 0.3) represent shrubs and meadows, while large values (between 0.6 and 0.8) indicate temperate and tropical forests. for the Landsat 8, the formula is expressed as follows
+
 $NDVI=\frac{BAND 5 - Band 4}{Band 5 + Band 4}---(1)$
 
  
 ## Correlation analysis 
 
-Correlation analysis is a statistical method used to examine the relationship between two or more variables. The correlation coefficients range between -1 and 1. 0 indicates no relationship between variables, -1 indicates negative, and +1 indicates positive correlation.
+Correlation analysis is a statistical method used to examine the relationship between two or more variables. The correlation coefficients range between -1 and 1. correlation coefficient 0 indicates no relationship between variables, -1 indicates negative, and +1 indicates positive correlation.
  The equation of the Correlation Coefficient is given below.
  
 $r_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)\left(Y_{i}-\bar{Y}\right)}{\sqrt{{\Sigma}_{\Sigma_{i}=1}^{n}\left(X_{i}-\bar{X}\right)^{2}} \sqrt{{\sum}_{\Sigma_{i}=1}^{n}\left(Y_{i}-\bar{Y}\right)^{2}}}---(2)$
@@ -125,6 +126,8 @@ $r_{X, Y}=\frac{\operatorname{cov}(X, Y)}{\sigma_{X} \sigma_{Y}}=\dfrac{\sum_{i=
 
 ## Land use/land cover classification
 In order to classify land use/land cover from Landsat images from 2018 to 2022, a support vector machine algorithm was used.
+
+Table 2. Classes description.
 
 | Classes      | Description                                                                         |
 |------------|:-----------------------------------------------------|
@@ -138,10 +141,13 @@ In order to classify land use/land cover from Landsat images from 2018 to 2022, 
 Support vector machines are not parametric classifiers. It was proposed by the @vapnik2015uniform and later explained by @vapnik1999overview. SMV can be easily trained by separable classes. If the training data with k number of samples, then it is represented as ${X_i y_i},i=1,..k$ where $X ∈ R^N$ is an N dimensional space and $Y ∈ {-1,+1}$ is classes label ,then these classes are linearly separable if there a vector W which perpendicular to the linear hyperplane and a scaler b  indicating the offset of the separating hyperplane from the origin$. 
 
 These can be expressed as 
+
 $WX_i + b \ge +1 $ for all y =+1,i.e a member of class 1   \n
+
 $WX_i + b \le -1 $ for all y =-1,i.e a member of class 2 $---(3)$
 
 
+Open source QGIS software was used for only training sample generation as ESRI shapefile [@QGIS_software]. 
 
 ## Land surface temperature and precipitation data analysis
 
@@ -243,7 +249,7 @@ lst_month<- ggplot(na.omit(lst)) +
   theme(axis.title.y = element_text(size=15))
 
 #ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, #width = 3,height = 2, units = "in")
-ggsave("Figures_or_Maps/lst_month.png",plot=lst_month,device="png",dpi=500)
+#ggsave("Figures_or_Maps/lst_month.png",plot=lst_month,device="png",dpi=500)
 
 ```
 
@@ -264,7 +270,7 @@ pre_month<- ggplot(na.omit(Prci)) +
   theme(axis.title.y = element_text(size=15))
 
 #ggsave(plot=lst_month,path='Figures_or_Maps',file='lst_month.png',dpi = 300,scale = 3.5, #width = 3,height = 2, units = "in")
-ggsave("Figures_or_Maps/pre_month.png",plot=pre_month,device="png",dpi=500)
+#ggsave("Figures_or_Maps/pre_month.png",plot=pre_month,device="png",dpi=500)
 
 
 #ndvi
@@ -290,7 +296,7 @@ pre_month<- ggplot(na.omit(ndvi)) +
     fill = "Month"
   ) +
   theme(axis.title.y = element_text(size=15))
-ggsave("Figures_or_Maps/ndvi_month.png",plot=pre_month,device="png",dpi=500)
+#ggsave("Figures_or_Maps/ndvi_month.png",plot=pre_month,device="png",dpi=500)
 
 ```
 
@@ -300,7 +306,7 @@ knitr::include_graphics('Figures_or_Maps/lst_month.png')
 ```
 
 
-Monthly precipitation data covered a period of over 20 years. During this period, the average precipitation rate ranged from 0.12 to 0.22 $mm/hr$. These rates remained relatively constant throughout the month. December to April had a higher precipitation rate of around 0.40 $mm/hr$, while August to November had a lower rate ranging from 0.05 to 0 $mm/hr$ (see table 2 and figure 3). 
+Monthly precipitation data covered a period of over 20 years. During this period, the average precipitation rate ranged from 0.12 to 0.22 $mm/hr$. These rates remained relatively constant throughout the month. December to April had a higher precipitation rate of around 0.40 $mm/hr$, while August to November had a lower rate ranging from 0.05 to 0 $mm/hr$ (see table 3 and figure 3). 
 
 ```{r echo=FALSE,fig.cap='Boxplot of Monthly Precipitation (mm/hr)'}
 knitr::include_graphics('Figures_or_Maps/pre_month.png')
@@ -310,7 +316,7 @@ knitr::include_graphics('Figures_or_Maps/pre_month.png')
 ```{r echo=FALSE}
 
 apa_table(lst_description,
-          caption = 'Descriptive statistics of Land surface temperature',
+          caption = 'Table 3. Descriptive statistics of Land surface temperature',
           note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
           escape = TRUE)
 ```
@@ -319,7 +325,7 @@ Monthly land surface temperature.
 
 ```{r echo=FALSE}
 apa_table(prc_description,
-          caption = 'Descriptive statistics of Precipitation (mm/hr)',
+          caption = 'Table 4. Descriptive statistics of Precipitation (mm/hr)',
           note = 'GPM: Monthly Global Precipitation Measurement (GPM) v6 ',
           escape = TRUE)
 ```
@@ -329,7 +335,7 @@ Looking at the image (NDVI), it is understood that every year due to the develop
 
 ```{r echo=FALSE}
 apa_table(ndvi_description,
-          caption = 'Descriptive statistics of NDVI',
+          caption = 'Table 5.  Descriptive statistics of NDVI',
           note = 'MOD11A2.006 Terra Land Surface Temperature and Emissivity 8-Day Global 1km ',
           escape = TRUE)
 ```
@@ -351,22 +357,25 @@ It is quite intriguing that Global MODIS/Terra NDVI don't have any negative valu
 knitr::include_graphics('Figures_or_Maps/ndvimap.png')
 ```
 
-Oktibbeha county covered much vegetation Throughout the different years. This was at least proved from 2018 to 2022. However, Starkville city had only a lower NDVI value which was spotted as brightness colored in the figure. Starkville experienced a bit more urbanization due to its urban infrastructures and university-based population, and growth exception occurred in the d labeled. This image contained a little more cloud. The cloud has only appeared in this image, but vegetation still was spotted as dark green. Due to the spot time of this work, the cloud removal process did not apply. That's why the cloud still remained in that image. Overall other images were well enough to make a conclusion about the vegetation distribution for the Oktibbeha county. 
+Oktibbeha county covered much vegetation Throughout the different years. This was at least proved from 2018 to 2022. However, Starkville city had only a lower NDVI value which was spotted as brightness colored in the figure. Starkville experienced a bit more urbanization due to its urban infrastructures and university-based population, and growth exception occurred in the d labeled. This image contained a little more cloud. The cloud has only appeared in this image, but vegetation still was spotted as dark green (>0.4). Due to the spot time of this work, the cloud removal process did not apply. That's why the cloud still remained in that image. Overall other images were well enough to make a conclusion about the vegetation distribution for the Oktibbeha county. 
 
-## Relationship between NDVI vs LST
+## Relationship between NDVI vs. LST
 
-It is clear that there is a correlation between vegetation and land surface temperature. In Oktibbeha county, for instance, the temperatures and NDVI are lower from November to March, while they are higher from April to  October (see figure 6). 
-```{r echo=FALSE,fig.cap=' Land Surface Temperature and NDVI relationship'}
+It is clear that there is a correlation between vegetation and land surface temperature. For instance, in Oktibbeha county, the temperatures and NDVI are lower from November to March, while they are higher from April to October (see figure 6). 
+```{r echo=FALSE,fig.cap=' Land Surface Temperature and NDVI relationship '}
+ 
 knitr::include_graphics('Figures_or_Maps/ndvilst.png')
 ```
 
 R squared value of 0.88 indicates that there is a good relationship between remotely observed NDVI and Land Surface temperature (see the Figure 6).
-Precipitation vs. NDVI or Land surface temperature vs. Precipitation graph ( subfigure labeled a and c in figure 6) seems negatively correlated. These two have 0.028, and 0.044 r squared values, respectively. 
+Precipitation vs. NDVI or Land surface temperature vs. Precipitation graph (subfigure labeled a and c in figure 6) seems negatively correlated. These two have 0.028, and 0.044 r squared values, respectively. 
 
-## Spatio- Temporal distriution of Land surface temperature analysis
+## Spatio- Temporal distribution of Land surface temperature analysis
 ```{r echo=FALSE,fig.cap=' Map of the  Land Surface Temperature for the Oktibbeha county. Here  a starts with March of 2018, then b is the June of 2018 and likelywise i labels is the March of 2022'}
-knitr::include_graphics('Figures_or_Maps/lstmap.png')
+knitr::include_graphics('Figures_or_Maps/lstmap.jpeg')
 ```
+
+Landsat 8 imageries showed that land surface temperatures (LST) ranged from 5 to 26$^0C$. This occurs because the data was taken during the winter seasons on a particular day. Sometimes, the temperature drops below 0 $^0C$ in Oktibbeha County during the winter season. Temperatures ranged from 5 to 16 $^0C$ in the winter and 23 to 29 $^0C$in the summer.Urban areas have rough surfaces like buildings and other infrastructures. Urbanized areas are relatively warm because they absorb solar radiation during the day and emit it at night due to these changes in natural surface energy and radiation balances[@terjung1973solar]. These areas tend to reflect less solar radiation. In contrast, vegetated areas are relatively colder. The dark red areas are the Starkville city in the Oktibbeha county in the figure 7. It was the only where urban development was concentrated in the county. 
 
 ## Spatio- Temporal Land use/land cover analysis
 
@@ -379,23 +388,26 @@ knitr::include_graphics('Figures_or_Maps/landcover.png')
 landcover <- read_csv("data/landcover.csv")
 landcover[,-1] <- printnum(landcover[,-1])
 apa_table(landcover,
-          caption = 'Result of Land cover/Land use classification',
+          caption = 'Table 6. Result of Land cover/Land use classification',
           escape = TRUE)
 ```
 
-The table and Figure reveal both positive and negative changes that occurred in the land use/cover pattern of Oktibbeha county. In 2018, built-up area areas were 343.67 square kilometers, and after 2022 it increased, whereas the opposite thing happened in vegetation. It was 1346 square kilometers, but after 2021, it became 820 square kilometers. 
+The table 6 and Figure 9 reveal both positive and negative changes that occurred in the land use/cover pattern of Oktibbeha county. In 2018, built-up area areas were 343.67 square kilometers, and after 2022 it increased, whereas the opposite thing happened in vegetation. It was 1346 square kilometers, but after 2021, it became 820 square kilometers. 
 
 ```{r echo=FALSE,fig.cap='Land cover /Land use barplot of Oktibbeha county'}
 knitr::include_graphics('Figures_or_Maps/landcoverbar.png')
 ```
 
-According to the figure 8 and 9, the most variable land cover classes are bare soil, roads/highways, and vegetation. As a five-year analysis of land cover/land use (see figure 9), there is one thing clear vegetated or forested areas are the dominant area in the Oktibbeha county. The Oktibbeha Starkville city has the most built-up area colored in red. The built-up areas are slowly increasing from 2018 to 2020. However, water bodies are not significantly detected due to lower resolution or sampling error. Other classes lie barren land is constant across the years—the change and result of classified areas in the squared kilometers. 
+According to Figures 8 and 9, bare soil, roads/highways, and vegetation are the most variable land cover classes. As a five-year analysis of land cover/land use (see figure 9), there is one thing clear vegetated or forested areas are the dominant area in the Oktibbeha county. The Oktibbeha Starkville city has the most built-up area colored in red. The built-up areas are slowly increasing from 2018 to 2020. However, water bodies are not significantly detected due to lower resolution or sampling error. Other classes lie barren land is constant across the years—the change and result of classified areas in the squared kilometers. 
 
-As a result of the subtropical latitude of Oktibbeha county and the extensive lands to the north, the county's climate is warm and humid. It is also influenced by warm temperatures from the Gulf of Mexico [@brent1973soil]. The average annual precipitation is 141.86 cm, with monthly precipitation ranging from 8.23 cm in October to 15.24 cm in March. The wettest seasons are winter and spring, with fall being the driest. Snow is uncommon and only lasts for a short time on the ground. The average temperature in this county ranges from 5.2 degrees Celsius in January to a high of 27 degrees Celsius in July. The average number of frost-free days (above O degrees C) in a year is 226[@leidolf2002flora]. 
+As a result of the subtropical latitude of Oktibbeha county and the extensive lands to the north, the county's climate is warm and humid. It is also influenced by warm temperatures from the Gulf of Mexico [@brent1973soil]. The average annual precipitation is 141.86 cm, with monthly precipitation ranging from 8.23 cm in October to 15.24 cm in March. The wettest seasons are winter and spring, with fall being the driest. Snow is uncommon and only lasts for a short time on the ground. The average temperature in this county ranges from 5.2 $^0C$ in January to a high of 27 $^0C$ in July. The average number of frost-free days (above O $^0C$) in a year is 226[@leidolf2002flora]. 
 
 # Conclusion
 
-The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Image classification is so accurate because training samples were very small. The other potential reason is that Feb, march, and June were collected for 30-meter resolution.  So satellites images had lower resolution and large cloud coverage. Cloud be removed further advanced analysis but this study has designated for only Spring 2022.The purpose of this study was to explore the use of R markdown for analyzing geospatial data and reproducing publishable scientific manuscripts.  It has been shown that the R markdown package can be used for data preprocessing, analysis, visualization, and creation of maps, tables, and articles. 
+The Landsat satellite imageries have been analyzed for the vegetation monitoring and estimation of land use from 2020 to 2022 along with land surface temperature and precipitation in Oktiheba county, Mississippi.Image classification is so accurate because training samples were very small. The other potential reason is that Feb, march, and June were collected for 30-meter resolution.  So satellite images had lower resolution and large cloud coverage. Cloud cloud be removed further advanced analysis but this study has designated for only Spring 2022.This study aimed to explore the use of R markdown for analyzing geospatial data and reproducing publishable scientific manuscripts. It has been shown that the R markdown package can be used for data preprocessing, analysis, visualization, and creation of maps, tables, and articles. 
+
+# conflicts of interest
+The author declares no conflicts of interest
 
 \newpage
 

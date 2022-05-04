@@ -103,6 +103,17 @@ for (i in 1:length(folders)){
   lstlist<- c(lstlist,lst_mean)
 }
 
+setwd("W:\\Home\\hahmad\\public\\D\\hahmad\\Data")
+lstrasters<- list.files(pattern = "(Celcius)")
+lstastacked<- raster::stack(lstrasters)
+names(lstastacked)<-paste0('C',substr(names(lstastacked),8,13))
+mapTheme <- rasterTheme(region=brewer.pal(8,"OrRd"))
+
+# save figure
+jpeg('lstmap.jpeg',width = 1400,height = 1400,quality = 2000,bg="white")
+rasterVis::levelplot(lstastacked,layout=c(3, 3),margin=F,scales = list(draw = FALSE), par.settings=mapTheme,xaxt='n',yaxt='n')
+dev.off()
+
 # ndvi as dataframe
 lstdf<- as.data.frame(lstlist)
 lstdf$date<-years
